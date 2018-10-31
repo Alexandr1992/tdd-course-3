@@ -18,7 +18,7 @@ const size_t g_fourHundred = 400;
 
 bool IsLeapYear(size_t year)
 {
-    if (year == g_fourHundred)
+    if (year % g_fourHundred == 0)
     {
         return true;
     }
