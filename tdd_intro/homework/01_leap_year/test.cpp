@@ -62,3 +62,9 @@ TEST(LeapYear, TestDivisible100)
     EXPECT_FALSE(IsLeapYear(g_oneHundred));
     EXPECT_FALSE(IsLeapYear(g_oneHundred * 5));
 }
+
+TEST(LeapYear, TestNotDivisible4_400_100)
+{
+    EXPECT_FALSE(IsLeapYear(333));
+    EXPECT_FALSE(IsLeapYear(555));
+}
