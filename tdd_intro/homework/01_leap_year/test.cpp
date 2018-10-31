@@ -14,15 +14,27 @@ If your language provides a method in the standard library that does this look-u
 
 #include <gtest/gtest.h>
 
-const size_t g_fourHundred = 400;
+
+const size_t g_four         = 4;
+const size_t g_oneHundred   = 100;
+const size_t g_fourHundred  = g_four * g_oneHundred;
+
+bool isDivisible(size_t number, size_t divider)
+{
+    return number % divider == 0;
+}
 
 bool IsLeapYear(size_t year)
 {
-    if (year % g_fourHundred == 0)
+    if (isDivisible(year, g_fourHundred))
     {
         return true;
     }
-    else if (year % 100 != 0 && year % 4 == 0)
+    if (isDivisible(year, g_oneHundred))
+    {
+        return false;
+    }
+    if (isDivisible(year, g_four))
     {
         return true;
     }
@@ -41,4 +53,12 @@ TEST(LeapYear, TestDivisible4AndNot100)
 {
     EXPECT_TRUE(IsLeapYear(104));
     EXPECT_TRUE(IsLeapYear(404));
+    EXPECT_TRUE(IsLeapYear(2008));
+    EXPECT_TRUE(IsLeapYear(2012));
+}
+
+TEST(LeapYear, TestDivisible100)
+{
+    EXPECT_FALSE(IsLeapYear(g_oneHundred));
+    EXPECT_FALSE(IsLeapYear(g_oneHundred * 5));
 }
