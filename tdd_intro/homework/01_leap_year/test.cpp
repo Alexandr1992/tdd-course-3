@@ -22,6 +22,10 @@ bool IsLeapYear(size_t year)
     {
         return true;
     }
+    else if (year % 100 != 0 && year % 4 == 0)
+    {
+        return true;
+    }
 
     return false;
 }
