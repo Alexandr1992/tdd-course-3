@@ -14,9 +14,11 @@ If your language provides a method in the standard library that does this look-u
 
 #include <gtest/gtest.h>
 
+const size_t g_fourHundred = 400;
+
 bool IsLeapYear(size_t year)
 {
-    if (year == 400)
+    if (year == g_fourHundred)
     {
         return true;
     }
@@ -26,5 +28,5 @@ bool IsLeapYear(size_t year)
 
 TEST(LeapYear, Test400)
 {
-    EXPECT_TRUE(IsLeapYear(400));
+    EXPECT_TRUE(IsLeapYear(g_fourHundred));
 }
