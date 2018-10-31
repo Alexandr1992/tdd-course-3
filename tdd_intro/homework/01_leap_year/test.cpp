@@ -14,6 +14,15 @@ If your language provides a method in the standard library that does this look-u
 
 #include <gtest/gtest.h>
 
+bool IsLeapYear(size_t year)
+{
+    if (year == 400)
+    {
+        return true;
+    }
+
+    return false;
+}
 
 TEST(LeapYear, Test400)
 {
