@@ -29,4 +29,6 @@ bool IsLeapYear(size_t year)
 TEST(LeapYear, Test400)
 {
     EXPECT_TRUE(IsLeapYear(g_fourHundred));
+    EXPECT_TRUE(IsLeapYear(g_fourHundred * 2));
+    EXPECT_TRUE(IsLeapYear(g_fourHundred * 3));
 }
