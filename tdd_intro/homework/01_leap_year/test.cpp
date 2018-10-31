@@ -13,3 +13,9 @@ If your language provides a method in the standard library that does this look-u
 */
 
 #include <gtest/gtest.h>
+
+
+TEST(LeapYear, Test400)
+{
+    EXPECT_TRUE(IsLeapYear(400));
+}
