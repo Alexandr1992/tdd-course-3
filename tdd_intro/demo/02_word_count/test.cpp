@@ -23,7 +23,12 @@ const static char wordSeparator = ' ';
 words_mt SeparateWords(const std::string& phrase)
 {
     const size_t index = phrase.find_first_of(wordSeparator);
-    return {{phrase.substr(0, index), 1}};
+
+    if (index != std::string::npos)
+    {
+        return {{phrase.substr(0, index), 1}};
+    }
+    return {{phrase, 1}};
 }
 
 TEST(WordsCount, TestSeparateFirstWord)
