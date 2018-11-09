@@ -20,6 +20,25 @@ such: 1
 using words_mt = std::map<std::string, size_t>;
 const static char wordSeparator = ' ';
 
+std::string TrimWord(std::string& phrase, const char seperator)
+{
+    size_t index = phrase.find_first_of(seperator);
+    std::string word;
+
+    if (index == std::string::npos || index == phrase.size())
+    {
+        word = phrase;
+        phrase.clear();
+    }
+    else
+    {
+        word = phrase.substr(0, index);
+        phrase = phrase.substr(index + 1, phrase.size() - index);
+    }
+
+    return word;
+}
+
 words_mt SeparateWords(const std::string& phrase)
 {
     std::string separatedPhrase = phrase;
@@ -60,7 +79,7 @@ TEST(WordsCount, TestTrimWord)
     EXPECT_EQ("course", phrase);
 
     EXPECT_EQ("course", TrimWord(phrase, ' '));
-    EXPECT_EQ("course", phrase);
+    EXPECT_EQ("", phrase);
 }
 
 TEST(WordsCount, TestSeparateSeveralWords)
