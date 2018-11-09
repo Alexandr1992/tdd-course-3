@@ -22,13 +22,26 @@ const static char wordSeparator = ' ';
 
 words_mt SeparateWords(const std::string& phrase)
 {
-    const size_t index = phrase.find_first_of(wordSeparator);
+    std::string separatedPhrase = phrase;
+    words_mt words;
+    size_t wordEndIndex = 0;
 
-    if (index != std::string::npos)
+    do
     {
-        return {{phrase.substr(0, index), 1}};
+        separatedPhrase = phrase.substr(wordEndIndex, phrase.size() - wordEndIndex);
+        wordEndIndex = separatedPhrase.find_first_of(wordSeparator);
+        if (wordEndIndex == std::string::npos)
+        {
+            wordEndIndex = phrase.size();
+        }
+
+        std::string word = separatedPhrase.substr(0, wordEndIndex);
+        ++words[word];
+        ++wordEndIndex;
     }
-    return {{phrase, 1}};
+    while(wordEndIndex < phrase.size());
+
+    return words;
 }
 
 TEST(WordsCount, TestSeparateFirstWord)
@@ -49,5 +62,4 @@ TEST(WordsCount, TestSeparateSeveralWords)
 
     EXPECT_TRUE(words.find("bro") != words.end());
     EXPECT_EQ(1, words["bro"]);
-
 }
