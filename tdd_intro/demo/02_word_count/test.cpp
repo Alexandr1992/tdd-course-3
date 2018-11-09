@@ -20,11 +20,14 @@ such: 1
 using words_mt = std::map<std::string, size_t>;
 const static char wordSeparator = ' ';
 
-std::string TrimWord(std::string& phrase, const char seperator)
+bool TrimWord(std::string& phrase, std::string& word, const char seperator)
 {
-    size_t index = phrase.find_first_of(seperator);
-    std::string word;
+    if (phrase.empty())
+    {
+        return false;
+    }
 
+    size_t index = phrase.find_first_of(seperator);
     if (index == std::string::npos || index == phrase.size())
     {
         word = phrase;
@@ -36,7 +39,7 @@ std::string TrimWord(std::string& phrase, const char seperator)
         phrase = phrase.substr(index + 1, phrase.size() - index);
     }
 
-    return word;
+    return true;
 }
 
 words_mt SeparateWords(const std::string& phrase)
@@ -45,7 +48,7 @@ words_mt SeparateWords(const std::string& phrase)
     std::string currentPhrase = phrase;
     std::string curentWord;
 
-    while (!(curentWord = TrimWord(currentPhrase, wordSeparator)).empty())
+    while (TrimWord(currentPhrase, curentWord, wordSeparator))
     {
         ++words[curentWord];
     }
