@@ -88,3 +88,27 @@ TEST(WordsCount, TestSeparateSeveralWords)
     EXPECT_TRUE(words.find("bro") != words.end());
     EXPECT_EQ(1, words["bro"]);
 }
+
+TEST(WordsCount, TestSeparateSeveralSameWords)
+{
+    words_mt words = SeparateWords("hello bro hello");
+
+    EXPECT_EQ(2, words.size());
+    EXPECT_TRUE(words.find("hello") != words.end());
+    EXPECT_EQ(2, words["hello"]);
+}
+
+TEST(WordsCount, TestEmptyString)
+{
+    words_mt words = SeparateWords("");
+    EXPECT_TRUE(words.empty());
+}
+
+TEST(WordsCount, TestSeparatorInEnd)
+{
+    words_mt words = SeparateWords("hello ");
+
+    EXPECT_EQ(1, words.size());
+    EXPECT_TRUE(words.find("hello") != words.end());
+    EXPECT_EQ(1, words["hello"]);
+}
