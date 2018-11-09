@@ -112,3 +112,21 @@ TEST(WordsCount, TestSeparatorInEnd)
     EXPECT_TRUE(words.find("hello") != words.end());
     EXPECT_EQ(1, words["hello"]);
 }
+
+TEST(WordsCount, AcceptanceTest)
+{
+    words_mt words = SeparateWords("olly olly in come free please please let it be in such manner olly");
+
+    ASSERT_EQ(10, words.size());
+
+    ASSERT_EQ(3, words["olly"]);
+    ASSERT_EQ(2, words["in"]);
+    ASSERT_EQ(1, words["come"]);
+    ASSERT_EQ(1, words["free"]);
+    ASSERT_EQ(2, words["please"]);
+    ASSERT_EQ(1, words["let"]);
+    ASSERT_EQ(1, words["it"]);
+    ASSERT_EQ(1, words["be"]);
+    ASSERT_EQ(1, words["manner"]);
+    ASSERT_EQ(1, words["such"]);
+}
