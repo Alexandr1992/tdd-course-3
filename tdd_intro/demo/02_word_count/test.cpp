@@ -77,7 +77,7 @@ TEST(WordsCount, TestTrimOneWord)
     EXPECT_FALSE(TrimWord(phrase, word, ' '));
 }
 
-TEST(WordsCount, TestSeparateSeveralWords)
+TEST(WordsCount, TestCountSeveralDifferentWords)
 {
     words_mt words = SeparateWords("hello bro");
     EXPECT_EQ(2, words.size());
@@ -89,7 +89,7 @@ TEST(WordsCount, TestSeparateSeveralWords)
     EXPECT_EQ(1, words["bro"]);
 }
 
-TEST(WordsCount, TestSeparateSeveralSameWords)
+TEST(WordsCount, TestCountSeveralSameWords)
 {
     words_mt words = SeparateWords("hello bro hello");
 
@@ -98,13 +98,13 @@ TEST(WordsCount, TestSeparateSeveralSameWords)
     EXPECT_EQ(2, words["hello"]);
 }
 
-TEST(WordsCount, TestEmptyString)
+TEST(WordsCount, TestNoWordsWhenEmptyInput)
 {
     words_mt words = SeparateWords("");
     EXPECT_TRUE(words.empty());
 }
 
-TEST(WordsCount, TestSeparatorInEnd)
+TEST(WordsCount, TestOneWordWhenSeparatorInEnd)
 {
     words_mt words = SeparateWords("hello ");
 
