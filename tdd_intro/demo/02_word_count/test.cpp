@@ -17,9 +17,19 @@ such: 1
 #include <string>
 #include <map>
 
+using words_mt = std::map<std::string, size_t>;
+const static char wordSeparator = ' ';
+
+words_mt SeparateWords(const std::string& phrase)
+{
+    const size_t index = phrase.find_first_of(wordSeparator);
+    return {{phrase.substr(0, index), 1}};
+}
 
 TEST(WordsCount, TestSeparateFirstWord)
 {
-    std::map<std::string, size_t> words = SeparateWords("hello bro");
-    EXPECT_EQ(1, words.size());
+    words_mt words = SeparateWords("hello");
+    ASSERT_EQ(1, words.size());
+    EXPECT_TRUE(words.find("hello") != words.end());
+    EXPECT_EQ(1, words["hello"]);
 }
