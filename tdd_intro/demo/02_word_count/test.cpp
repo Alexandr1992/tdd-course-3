@@ -41,24 +41,14 @@ std::string TrimWord(std::string& phrase, const char seperator)
 
 words_mt SeparateWords(const std::string& phrase)
 {
-    std::string separatedPhrase = phrase;
     words_mt words;
-    size_t wordEndIndex = 0;
+    std::string currentPhrase = phrase;
+    std::string curentWord;
 
-    do
+    while (!(curentWord = TrimWord(currentPhrase, wordSeparator)).empty())
     {
-        separatedPhrase = phrase.substr(wordEndIndex, phrase.size() - wordEndIndex);
-        wordEndIndex = separatedPhrase.find_first_of(wordSeparator);
-        if (wordEndIndex == std::string::npos)
-        {
-            wordEndIndex = phrase.size();
-        }
-
-        std::string word = separatedPhrase.substr(0, wordEndIndex);
-        ++words[word];
-        ++wordEndIndex;
+        ++words[curentWord];
     }
-    while(wordEndIndex < phrase.size());
 
     return words;
 }
@@ -71,7 +61,7 @@ TEST(WordsCount, TestSeparateFirstWord)
     EXPECT_EQ(1, words["hello"]);
 }
 
-TEST(WordsCount, TestTrimWord)
+TEST(WordsCount, TestTrimOneWord)
 {
     std::string phrase = "tdd course";
 
