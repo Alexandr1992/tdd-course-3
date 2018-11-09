@@ -52,6 +52,17 @@ TEST(WordsCount, TestSeparateFirstWord)
     EXPECT_EQ(1, words["hello"]);
 }
 
+TEST(WordsCount, TestTrimWord)
+{
+    std::string phrase = "tdd course";
+
+    EXPECT_EQ("tdd", TrimWord(phrase, ' '));
+    EXPECT_EQ("course", phrase);
+
+    EXPECT_EQ("course", TrimWord(phrase, ' '));
+    EXPECT_EQ("course", phrase);
+}
+
 TEST(WordsCount, TestSeparateSeveralWords)
 {
     words_mt words = SeparateWords("hello bro");
