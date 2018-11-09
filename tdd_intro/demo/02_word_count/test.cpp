@@ -34,7 +34,20 @@ words_mt SeparateWords(const std::string& phrase)
 TEST(WordsCount, TestSeparateFirstWord)
 {
     words_mt words = SeparateWords("hello");
-    ASSERT_EQ(1, words.size());
+    EXPECT_EQ(1, words.size());
     EXPECT_TRUE(words.find("hello") != words.end());
     EXPECT_EQ(1, words["hello"]);
+}
+
+TEST(WordsCount, TestSeparateSeveralWords)
+{
+    words_mt words = SeparateWords("hello bro");
+    EXPECT_EQ(2, words.size());
+
+    EXPECT_TRUE(words.find("hello") != words.end());
+    EXPECT_EQ(1, words["hello"]);
+
+    EXPECT_TRUE(words.find("bro") != words.end());
+    EXPECT_EQ(1, words["bro"]);
+
 }
