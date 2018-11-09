@@ -17,3 +17,9 @@ such: 1
 #include <string>
 #include <map>
 
+
+TEST(WordsCount, TestSeparateFirstWord)
+{
+    std::map<std::string, size_t> words = SeparateWords("hello bro");
+    EXPECT_EQ(1, words.size());
+}
