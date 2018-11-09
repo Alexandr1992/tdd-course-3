@@ -64,12 +64,14 @@ TEST(WordsCount, TestSeparateFirstWord)
 TEST(WordsCount, TestTrimOneWord)
 {
     std::string phrase = "tdd course";
-
-    EXPECT_EQ("tdd", TrimWord(phrase, ' '));
+    std::string word;
+    EXPECT_TRUE(TrimWord(phrase, word, ' '));
     EXPECT_EQ("course", phrase);
 
-    EXPECT_EQ("course", TrimWord(phrase, ' '));
+    EXPECT_TRUE(TrimWord(phrase, word, ' '));
     EXPECT_EQ("", phrase);
+
+    EXPECT_FALSE(TrimWord(phrase, word, ' '));
 }
 
 TEST(WordsCount, TestSeparateSeveralWords)
