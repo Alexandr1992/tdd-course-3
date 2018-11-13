@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <cmath>
 
 /*
 Convert a ternary number, represented as a string (e.g. '102012'), to its decimal equivalent using first principles.
@@ -19,10 +20,13 @@ If your language provides a method in the standard library to perform the conver
 
 size_t ConvertTernaryToDecimal(size_t numerical, size_t position)
 {
-
+    size_t pow = std::pow(3, position);
+    return pow * numerical;
 }
 
-TEST(TernaryNumber, ConvertTernaryNum0_Pos0_ToDecimal)
+TEST(TernaryNumber, ConvertCorrectTernaryNumerical_Pos0_ToDecimal)
 {
     EXPECT_EQ(0, ConvertTernaryToDecimal(0, 0));
+    EXPECT_EQ(1, ConvertTernaryToDecimal(1, 0));
+    EXPECT_EQ(2, ConvertTernaryToDecimal(2, 0));
 }
