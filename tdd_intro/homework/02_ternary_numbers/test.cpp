@@ -24,9 +24,16 @@ size_t ConvertTernaryToDecimal(size_t numerical, size_t position)
     return pow * numerical;
 }
 
-TEST(TernaryNumber, ConvertCorrectTernaryNumerical_Pos0_ToDecimal)
+TEST(TernaryNumber, TestConvertCorrectTernaryNumerical_Pos0_ToDecimal)
 {
     EXPECT_EQ(0, ConvertTernaryToDecimal(0, 0));
     EXPECT_EQ(1, ConvertTernaryToDecimal(1, 0));
     EXPECT_EQ(2, ConvertTernaryToDecimal(2, 0));
+}
+
+TEST(TernaryNumber, TestConvertInvalidTernaryNumerical)
+{
+    EXPECT_EQ(0, ConvertTernaryToDecimal(4, 0));
+    EXPECT_EQ(0, ConvertTernaryToDecimal(5, 0));
+    EXPECT_EQ(0, ConvertTernaryToDecimal(20, 0));
 }
