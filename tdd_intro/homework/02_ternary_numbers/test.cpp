@@ -32,7 +32,8 @@ size_t ConvertTernaryToDecimal(size_t numerical, size_t position)
 
 size_t ConvertTernaryToDecimal(const std::string& ternary)
 {
-    return 0;
+    char sync = ternary[0];
+    return std::atoi(&sync);
 }
 
 TEST(TernaryNumber, TestConvertTernaryNum_Pos0_ToDecimal)
