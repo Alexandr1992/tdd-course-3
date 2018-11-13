@@ -20,6 +20,11 @@ If your language provides a method in the standard library to perform the conver
 
 size_t ConvertTernaryToDecimal(size_t numerical, size_t position)
 {
+    if(numerical > 2)
+    {
+        return 0;
+    }
+
     size_t pow = std::pow(3, position);
     return pow * numerical;
 }
