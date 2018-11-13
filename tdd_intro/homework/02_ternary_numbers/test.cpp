@@ -16,3 +16,13 @@ The last place in a ternary number is the 1's place. The second to last is the 3
 
 If your language provides a method in the standard library to perform the conversion, pretend it doesn't exist and implement it yourself.
 */
+
+size_t ConvertTernaryToDecimal(size_t numerical, size_t position)
+{
+
+}
+
+TEST(TernaryNumber, ConvertTernaryNum0_Pos0_ToDecimal)
+{
+    EXPECT_EQ(0, ConvertTernaryToDecimal(0, 0));
+}
