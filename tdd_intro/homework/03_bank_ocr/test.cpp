@@ -212,7 +212,14 @@ const Display s_display123456789 = { "    _  _     _  _  _  _  _ ",
 size_t DetectDigit(const Digit& digit)
 {
     const std::string digitHash = digit.lines[0] + digit.lines[1] + digit.lines[2];
-    return g_digitsMap[digitHash];
+
+    const auto& value = g_digitsMap.find(digitHash);
+    if (value != g_digitsMap.end())
+    {
+        return g_digitsMap[digitHash];
+    }
+
+    throw std::runtime_error("Invalid digit format");
 }
 
 TEST(BankOcr, TestDetectValidDigits)
@@ -232,8 +239,8 @@ TEST(BankOcr, TestDetectValidDigits)
 TEST(BankOcr, TestThrowExceptionWhenDetectInvalidDigits)
 {
     const static Digit invalidDigit = { " _ ",
-                            "| |",
-                            "| |"};
+                                        "| |",
+                                        "| |"};
 
     EXPECT_THROW(DetectDigit(invalidDigit), std::runtime_error);
 }
