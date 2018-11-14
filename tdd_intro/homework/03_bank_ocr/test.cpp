@@ -222,6 +222,11 @@ size_t DetectDigit(const Digit& digit)
     throw std::runtime_error("Invalid digit format");
 }
 
+size_t ParseDigits(const Display& display)
+{
+    return 1;
+}
+
 TEST(BankOcr, TestDetectValidDigits)
 {
     EXPECT_EQ(0, DetectDigit(s_digit0));
@@ -243,4 +248,9 @@ TEST(BankOcr, TestThrowExceptionWhenDetectInvalidDigits)
                                         "| |"};
 
     EXPECT_THROW(DetectDigit(invalidDigit), std::runtime_error);
+}
+
+TEST(BankOcr, TestParseFirstDigitFromDisplay0)
+{
+    EXPECT_EQ(0, ParseDigits(s_displayAll0));
 }
