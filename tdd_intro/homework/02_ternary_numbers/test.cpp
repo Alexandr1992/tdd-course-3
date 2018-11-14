@@ -32,8 +32,9 @@ size_t ConvertTernaryToDecimal(size_t numerical, size_t position)
 
 size_t ConvertTernaryToDecimal(const std::string& ternary)
 {
-    char sync = ternary[0];
-    return std::atoi(&sync);
+    char symbChar = ternary[0];
+    int numb = std::atoi(&symbChar);
+    return ConvertTernaryToDecimal(static_cast<size_t>(numb), 0);
 }
 
 TEST(TernaryNumber, TestConvertTernaryNum_Pos0_ToDecimal)
@@ -50,14 +51,17 @@ TEST(TernaryNumber, TestConvertTernaryNum_Larger0_ToDecimal)
     EXPECT_EQ(54, ConvertTernaryToDecimal(2, 3));
 }
 
-TEST(TernaryNumber, TestConvertInvalidTernaryNumerical)
+TEST(TernaryNumber, TestConvertInvalidTernary)
 {
     EXPECT_EQ(0, ConvertTernaryToDecimal(4, 0));
     EXPECT_EQ(0, ConvertTernaryToDecimal(5, 0));
     EXPECT_EQ(0, ConvertTernaryToDecimal(20, 0));
 }
 
-TEST(TernaryNumber, ConvertFirstTernaryNumFromString)
+TEST(TernaryNumber, TestConvertOneTernaryNumericalStrToDecimal)
 {
+    EXPECT_EQ(0, ConvertTernaryToDecimal("0"));
     EXPECT_EQ(1, ConvertTernaryToDecimal("1"));
+    EXPECT_EQ(2, ConvertTernaryToDecimal("2"));
+    EXPECT_EQ(0, ConvertTernaryToDecimal("3"));
 }
