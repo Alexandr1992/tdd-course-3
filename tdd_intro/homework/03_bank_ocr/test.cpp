@@ -222,11 +222,6 @@ char DetectDigit(const Digit& digit)
     throw std::runtime_error("Invalid digit format");
 }
 
-std::string ParseDigits(const Display& display)
-{
-    return "1";
-}
-
 Digit ParseDigitFromDisplay(const Display& display, size_t digitPos)
 {
     if (digitPos > 9)
@@ -242,6 +237,16 @@ Digit ParseDigitFromDisplay(const Display& display, size_t digitPos)
     }
 
     return digit;
+}
+
+
+std::string ParseDigits(const Display& display)
+{
+    std::string finalDigits;
+    Digit digit = ParseDigitFromDisplay(display, 0);
+    finalDigits += DetectDigit(digit);
+
+    return finalDigits;
 }
 
 TEST(BankOcr, TestDetectValidDigits)
