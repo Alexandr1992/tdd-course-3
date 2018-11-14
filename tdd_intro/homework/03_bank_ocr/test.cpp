@@ -227,10 +227,15 @@ std::string ParseDigits(const Display& display)
     return "0";
 }
 
-Digit ParseDigitFromDisplay(const Display& display, size_t pos)
+Digit ParseDigitFromDisplay(const Display& display, size_t digitPos)
 {
+    if (digitPos > 9)
+    {
+        throw std::runtime_error("Invalid display offset");
+    }
+
     Digit digit;
-    const size_t offset = pos * g_digitLen;
+    const size_t offset = digitPos * g_digitLen;
     for(size_t i = 0; i < g_linesInDigit; ++i)
     {
         digit.lines[i] = display.lines[i].substr(offset, g_digitLen);
