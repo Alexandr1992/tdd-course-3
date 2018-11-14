@@ -195,3 +195,13 @@ const Display s_display123456789 = { "    _  _     _  _  _  _  _ ",
                                      "  | _| _||_||_ |_   ||_||_|",
                                      "  ||_  _|  | _||_|  ||_| _|"
 };
+
+size_t DetectDigit(const Digit& digit)
+{
+    return 0;
+}
+
+TEST(BankOcr, TestDetectDigit9)
+{
+    EXPECT_EQ(9, DetectDigit(s_digit9));
+}
