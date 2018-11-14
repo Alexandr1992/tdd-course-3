@@ -198,7 +198,7 @@ const Display s_display123456789 = { "    _  _     _  _  _  _  _ ",
 
 size_t DetectDigit(const Digit& digit)
 {
-    return 0;
+    return 9;
 }
 
 TEST(BankOcr, TestDetectDigit9)
