@@ -243,8 +243,11 @@ Digit ParseDigitFromDisplay(const Display& display, size_t digitPos)
 std::string ParseDigits(const Display& display)
 {
     std::string finalDigits;
-    Digit digit = ParseDigitFromDisplay(display, 0);
-    finalDigits += DetectDigit(digit);
+    for (size_t i = 0; i < g_digitsOnDisplay; ++i)
+    {
+        Digit digit = ParseDigitFromDisplay(display, i);
+        finalDigits += DetectDigit(digit);
+    }
 
     return finalDigits;
 }
@@ -279,7 +282,7 @@ TEST(BankOcr, TestParseFirstDigitFromDisplay0)
 
 TEST(BankOcr, TestParseFirstDigitFromDisplay1)
 {
-    EXPECT_EQ('1', ParseDigits(s_display123456789)[1]);
+    EXPECT_EQ('2', ParseDigits(s_display123456789)[1]);
 }
 
 TEST(BankOcr, TestParseDigit1FromDisplayNumber0)
