@@ -205,3 +205,8 @@ TEST(BankOcr, TestDetectDigit9)
 {
     EXPECT_EQ(9, DetectDigit(s_digit9));
 }
+
+TEST(BankOcr, TestDetectDigit8)
+{
+    EXPECT_EQ(8, DetectDigit(s_digit8));
+}
