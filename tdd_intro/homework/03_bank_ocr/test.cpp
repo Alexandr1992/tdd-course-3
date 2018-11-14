@@ -224,7 +224,7 @@ char DetectDigit(const Digit& digit)
 
 std::string ParseDigits(const Display& display)
 {
-    return "0";
+    return "1";
 }
 
 Digit ParseDigitFromDisplay(const Display& display, size_t digitPos)
@@ -267,7 +267,7 @@ TEST(BankOcr, TestThrowExceptionWhenDetectInvalidDigits)
     EXPECT_THROW(DetectDigit(invalidDigit), std::runtime_error);
 }
 
-TEST(BankOcr, DISABLED_TestParseFirstDigitFromDisplay0)
+TEST(BankOcr, TestParseFirstDigitFromDisplay0)
 {
     EXPECT_EQ('0', ParseDigits(s_displayAll0)[0]);
 }
