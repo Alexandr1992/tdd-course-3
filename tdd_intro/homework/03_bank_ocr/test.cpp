@@ -101,16 +101,16 @@ struct Display
 };
 
 std::map<std::string, size_t> g_digitsMap{
-    { " _ | ||_|", 0},
-    { "     |  |", 1},
-    { " _  _||_ ", 2},
-    { " _  _| _|", 3},
-    { "   |_|  |", 4},
-    { " _ |_  _|", 5},
-    { " _ |_ |_|", 6},
-    { " _   |  |", 7},
-    { " _ |_||_|", 8},
-    { " _ |_| _|", 9}
+    { " _ | ||_|", '0'},
+    { "     |  |", '1'},
+    { " _  _||_ ", '2'},
+    { " _  _| _|", '3'},
+    { "   |_|  |", '4'},
+    { " _ |_  _|", '5'},
+    { " _ |_ |_|", '6'},
+    { " _   |  |", '7'},
+    { " _ |_||_|", '8'},
+    { " _ |_| _|", '9'}
 };
 
 const Digit s_digit0 = { " _ ",
@@ -209,7 +209,7 @@ const Display s_display123456789 = { "    _  _     _  _  _  _  _ ",
                                      "  ||_  _|  | _||_|  ||_| _|"
 };
 
-size_t DetectDigit(const Digit& digit)
+char DetectDigit(const Digit& digit)
 {
     const std::string digitHash = digit.lines[0] + digit.lines[1] + digit.lines[2];
 
@@ -222,23 +222,23 @@ size_t DetectDigit(const Digit& digit)
     throw std::runtime_error("Invalid digit format");
 }
 
-size_t ParseDigits(const Display& display)
+std::string ParseDigits(const Display& display)
 {
-    return 1;
+    return "0";
 }
 
 TEST(BankOcr, TestDetectValidDigits)
 {
-    EXPECT_EQ(0, DetectDigit(s_digit0));
-    EXPECT_EQ(1, DetectDigit(s_digit1));
-    EXPECT_EQ(2, DetectDigit(s_digit2));
-    EXPECT_EQ(3, DetectDigit(s_digit3));
-    EXPECT_EQ(4, DetectDigit(s_digit4));
-    EXPECT_EQ(5, DetectDigit(s_digit5));
-    EXPECT_EQ(6, DetectDigit(s_digit6));
-    EXPECT_EQ(7, DetectDigit(s_digit7));
-    EXPECT_EQ(8, DetectDigit(s_digit8));
-    EXPECT_EQ(9, DetectDigit(s_digit9));
+    EXPECT_EQ('0', DetectDigit(s_digit0));
+    EXPECT_EQ('1', DetectDigit(s_digit1));
+    EXPECT_EQ('2', DetectDigit(s_digit2));
+    EXPECT_EQ('3', DetectDigit(s_digit3));
+    EXPECT_EQ('4', DetectDigit(s_digit4));
+    EXPECT_EQ('5', DetectDigit(s_digit5));
+    EXPECT_EQ('6', DetectDigit(s_digit6));
+    EXPECT_EQ('7', DetectDigit(s_digit7));
+    EXPECT_EQ('8', DetectDigit(s_digit8));
+    EXPECT_EQ('9', DetectDigit(s_digit9));
 }
 
 TEST(BankOcr, TestThrowExceptionWhenDetectInvalidDigits)
@@ -252,5 +252,5 @@ TEST(BankOcr, TestThrowExceptionWhenDetectInvalidDigits)
 
 TEST(BankOcr, TestParseFirstDigitFromDisplay0)
 {
-    EXPECT_EQ(0, ParseDigits(s_displayAll0));
+    EXPECT_EQ('0', ParseDigits(s_displayAll0)[0]);
 }
