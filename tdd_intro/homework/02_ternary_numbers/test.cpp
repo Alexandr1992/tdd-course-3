@@ -26,8 +26,8 @@ size_t ConvertTernaryToDecimal(size_t numerical, size_t position)
         return 0;
     }
 
-    size_t pow = std::pow(3, position);
-    return pow * numerical;
+    double ternaryPow = std::pow(3, position);
+    return static_cast<size_t>(ternaryPow) * numerical;
 }
 
 size_t ConvertTernaryToDecimal(const std::string& ternary)
@@ -75,4 +75,9 @@ TEST(TernaryNumber, TestConvertOneTernaryNumericalStrToDecimal)
 TEST(TernaryNumber, TestConvertTernaryStrToDecimal)
 {
     EXPECT_EQ(302, ConvertTernaryToDecimal("102012"));
+}
+
+TEST(TernaryNumber, TestEmptyTernaryString)
+{
+    EXPECT_EQ(0, ConvertTernaryToDecimal(""));
 }
