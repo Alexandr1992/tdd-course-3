@@ -81,3 +81,8 @@ TEST(TernaryNumber, TestEmptyTernaryString)
 {
     EXPECT_EQ(0, ConvertTernaryToDecimal(""));
 }
+
+TEST(TernaryNumber, TestIncorrectTernaryNumberInString)
+{
+    EXPECT_EQ(302, ConvertTernaryToDecimal("192612"));
+}
