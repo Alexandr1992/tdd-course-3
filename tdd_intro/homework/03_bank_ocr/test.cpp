@@ -100,7 +100,7 @@ struct Display
     std::string lines[g_linesInDigit];
 };
 
-std::map<std::string, char> g_digitsMap{
+const std::map<std::string, char> s_digitsMap{
     { " _ | ||_|", '0'},
     { "     |  |", '1'},
     { " _  _||_ ", '2'},
@@ -213,10 +213,10 @@ char DetectDigit(const Digit& digit)
 {
     const std::string digitHash = digit.lines[0] + digit.lines[1] + digit.lines[2];
 
-    const auto& value = g_digitsMap.find(digitHash);
-    if (value != g_digitsMap.end())
+    const auto& value = s_digitsMap.find(digitHash);
+    if (value != s_digitsMap.end())
     {
-        return g_digitsMap[digitHash];
+        return value->second;
     }
 
     throw std::runtime_error("Invalid digit format");
