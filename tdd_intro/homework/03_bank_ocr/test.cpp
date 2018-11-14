@@ -307,3 +307,19 @@ TEST(BankOcr, TestExceptionWhenParseUnknownDisplayOffset)
 {
     EXPECT_THROW(ParseDigitFromDisplay(s_display123456789, 10), std::runtime_error);
 }
+
+TEST(BankOcr, AcceptanceTest)
+{
+    EXPECT_EQ("000000000", ParseDigits(s_displayAll0));
+    EXPECT_EQ("111111111", ParseDigits(s_displayAll1));
+    EXPECT_EQ("222222222", ParseDigits(s_displayAll2));
+    EXPECT_EQ("333333333", ParseDigits(s_displayAll3));
+    EXPECT_EQ("444444444", ParseDigits(s_displayAll4));
+    EXPECT_EQ("555555555", ParseDigits(s_displayAll5));
+    EXPECT_EQ("666666666", ParseDigits(s_displayAll6));
+    EXPECT_EQ("777777777", ParseDigits(s_displayAll7));
+    EXPECT_EQ("888888888", ParseDigits(s_displayAll8));
+    EXPECT_EQ("999999999", ParseDigits(s_displayAll9));
+    EXPECT_EQ("123456789", ParseDigits(s_display123456789));
+
+}
