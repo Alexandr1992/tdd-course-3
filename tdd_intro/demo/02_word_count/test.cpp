@@ -17,3 +17,116 @@ such: 1
 #include <string>
 #include <map>
 
+using words_mt = std::map<std::string, size_t>;
+const static char wordSeparator = ' ';
+
+bool TrimWord(std::string& phrase, std::string& word, const char seperator)
+{
+    if (phrase.empty())
+    {
+        return false;
+    }
+
+    size_t index = phrase.find_first_of(seperator);
+    if (index == std::string::npos || index == phrase.size())
+    {
+        word = phrase;
+        phrase.clear();
+    }
+    else
+    {
+        word = phrase.substr(0, index);
+        phrase = phrase.substr(index + 1, phrase.size() - index);
+    }
+
+    return true;
+}
+
+words_mt SeparateWords(const std::string& phrase)
+{
+    words_mt words;
+    std::string currentPhrase = phrase;
+    std::string curentWord;
+
+    while (TrimWord(currentPhrase, curentWord, wordSeparator))
+    {
+        ++words[curentWord];
+    }
+
+    return words;
+}
+
+TEST(WordsCount, TestSeparateFirstWord)
+{
+    words_mt words = SeparateWords("hello");
+    EXPECT_EQ(1, words.size());
+    EXPECT_TRUE(words.find("hello") != words.end());
+    EXPECT_EQ(1, words["hello"]);
+}
+
+TEST(WordsCount, TestTrimOneWord)
+{
+    std::string phrase = "tdd course";
+    std::string word;
+    EXPECT_TRUE(TrimWord(phrase, word, ' '));
+    EXPECT_EQ("course", phrase);
+
+    EXPECT_TRUE(TrimWord(phrase, word, ' '));
+    EXPECT_EQ("", phrase);
+
+    EXPECT_FALSE(TrimWord(phrase, word, ' '));
+}
+
+TEST(WordsCount, TestCountSeveralDifferentWords)
+{
+    words_mt words = SeparateWords("hello bro");
+    EXPECT_EQ(2, words.size());
+
+    EXPECT_TRUE(words.find("hello") != words.end());
+    EXPECT_EQ(1, words["hello"]);
+
+    EXPECT_TRUE(words.find("bro") != words.end());
+    EXPECT_EQ(1, words["bro"]);
+}
+
+TEST(WordsCount, TestCountSeveralSameWords)
+{
+    words_mt words = SeparateWords("hello bro hello");
+
+    EXPECT_EQ(2, words.size());
+    EXPECT_TRUE(words.find("hello") != words.end());
+    EXPECT_EQ(2, words["hello"]);
+}
+
+TEST(WordsCount, TestNoWordsWhenEmptyInput)
+{
+    words_mt words = SeparateWords("");
+    EXPECT_TRUE(words.empty());
+}
+
+TEST(WordsCount, TestOneWordWhenSeparatorInEnd)
+{
+    words_mt words = SeparateWords("hello ");
+
+    EXPECT_EQ(1, words.size());
+    EXPECT_TRUE(words.find("hello") != words.end());
+    EXPECT_EQ(1, words["hello"]);
+}
+
+TEST(WordsCount, AcceptanceTest)
+{
+    words_mt words = SeparateWords("olly olly in come free please please let it be in such manner olly");
+
+    ASSERT_EQ(10, words.size());
+
+    ASSERT_EQ(3, words["olly"]);
+    ASSERT_EQ(2, words["in"]);
+    ASSERT_EQ(1, words["come"]);
+    ASSERT_EQ(1, words["free"]);
+    ASSERT_EQ(2, words["please"]);
+    ASSERT_EQ(1, words["let"]);
+    ASSERT_EQ(1, words["it"]);
+    ASSERT_EQ(1, words["be"]);
+    ASSERT_EQ(1, words["manner"]);
+    ASSERT_EQ(1, words["such"]);
+}

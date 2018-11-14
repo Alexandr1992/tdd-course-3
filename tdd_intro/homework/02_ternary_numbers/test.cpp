@@ -1,4 +1,6 @@
 #include <gtest/gtest.h>
+#include <cmath>
+#include <string>
 
 /*
 Convert a ternary number, represented as a string (e.g. '102012'), to its decimal equivalent using first principles.
@@ -16,3 +18,72 @@ The last place in a ternary number is the 1's place. The second to last is the 3
 
 If your language provides a method in the standard library to perform the conversion, pretend it doesn't exist and implement it yourself.
 */
+
+size_t ConvertTernaryToDecimal(size_t numerical, size_t position)
+{
+    if(numerical > 2)
+    {
+        return 0;
+    }
+
+    double ternaryPow = std::pow(3, position);
+    return static_cast<size_t>(ternaryPow) * numerical;
+}
+
+size_t ConvertTernaryToDecimal(const std::string& ternary)
+{
+    size_t result = 0;
+    size_t position = ternary.size();
+    for (const char ternarySymbChar: ternary)
+    {
+        int ternaryNumb = std::atoi(&ternarySymbChar);
+        result += ConvertTernaryToDecimal(static_cast<size_t>(ternaryNumb), --position);
+    }
+
+    return result;
+}
+
+TEST(TernaryNumber, TestConvertTernaryNum_Pos0_ToDecimal)
+{
+    EXPECT_EQ(0, ConvertTernaryToDecimal(0, 0));
+    EXPECT_EQ(1, ConvertTernaryToDecimal(1, 0));
+    EXPECT_EQ(2, ConvertTernaryToDecimal(2, 0));
+}
+
+TEST(TernaryNumber, TestConvertTernaryNum_Larger0_ToDecimal)
+{
+    EXPECT_EQ(3, ConvertTernaryToDecimal(1, 1));
+    EXPECT_EQ(0, ConvertTernaryToDecimal(0, 2));
+    EXPECT_EQ(54, ConvertTernaryToDecimal(2, 3));
+}
+
+TEST(TernaryNumber, TestConvertInvalidTernary)
+{
+    EXPECT_EQ(0, ConvertTernaryToDecimal(4, 0));
+    EXPECT_EQ(0, ConvertTernaryToDecimal(5, 0));
+    EXPECT_EQ(0, ConvertTernaryToDecimal(20, 0));
+}
+
+TEST(TernaryNumber, TestConvertOneTernaryNumericalStrToDecimal)
+{
+    EXPECT_EQ(0, ConvertTernaryToDecimal("0"));
+    EXPECT_EQ(1, ConvertTernaryToDecimal("1"));
+    EXPECT_EQ(2, ConvertTernaryToDecimal("2"));
+    EXPECT_EQ(0, ConvertTernaryToDecimal("3"));
+}
+
+TEST(TernaryNumber, TestConvertTernaryStrToDecimal)
+{
+    EXPECT_EQ(302, ConvertTernaryToDecimal("102012"));
+}
+
+TEST(TernaryNumber, TestEmptyTernaryString)
+{
+    EXPECT_EQ(0, ConvertTernaryToDecimal(""));
+}
+
+TEST(TernaryNumber, TestIncorrectTernaryNumberInString)
+{
+    EXPECT_EQ(302, ConvertTernaryToDecimal("192612"));
+    EXPECT_EQ(302, ConvertTernaryToDecimal("1*2%12"));
+}
