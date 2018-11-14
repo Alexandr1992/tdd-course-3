@@ -277,6 +277,11 @@ TEST(BankOcr, TestParseFirstDigitFromDisplay0)
     EXPECT_EQ('0', ParseDigits(s_displayAll0)[0]);
 }
 
+TEST(BankOcr, TestParseFirstDigitFromDisplay1)
+{
+    EXPECT_EQ('1', ParseDigits(s_display123456789)[1]);
+}
+
 TEST(BankOcr, TestParseDigit1FromDisplayNumber0)
 {
     const Digit digit = ParseDigitFromDisplay(s_display123456789, 0);
