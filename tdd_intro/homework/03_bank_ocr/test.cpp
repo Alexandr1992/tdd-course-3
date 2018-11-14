@@ -100,6 +100,19 @@ struct Display
     std::string lines[g_linesInDigit];
 };
 
+std::map<std::string, size_t> g_digitsMap{
+    { " _ | ||_|", 0},
+    { "     |  |", 1},
+    { " _  _||_ ", 2},
+    { " _  _| _|", 3},
+    { "   |_|  |", 4},
+    { " _ |_  _|", 5},
+    { " _ |_ |_|", 6},
+    { " _   |  |", 7},
+    { " _ |_||_|", 8},
+    { " _ |_| _|", 9}
+};
+
 const Digit s_digit0 = { " _ ",
                          "| |",
                          "|_|"
@@ -198,7 +211,8 @@ const Display s_display123456789 = { "    _  _     _  _  _  _  _ ",
 
 size_t DetectDigit(const Digit& digit)
 {
-    return 9;
+    std::string digitHash = digit.lines[0] + digit.lines[1] + digit.lines[2];
+    return g_digitsMap[digitHash];
 }
 
 TEST(BankOcr, TestDetectDigit9)
