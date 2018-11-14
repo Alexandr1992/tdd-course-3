@@ -65,3 +65,8 @@ TEST(TernaryNumber, TestConvertOneTernaryNumericalStrToDecimal)
     EXPECT_EQ(2, ConvertTernaryToDecimal("2"));
     EXPECT_EQ(0, ConvertTernaryToDecimal("3"));
 }
+
+TEST(TernaryNumber, TestConvertTernaryStrToDecimal)
+{
+    EXPECT_EQ(302, ConvertTernaryToDecimal("102012"));
+}
