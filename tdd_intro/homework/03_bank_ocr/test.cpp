@@ -211,16 +211,20 @@ const Display s_display123456789 = { "    _  _     _  _  _  _  _ ",
 
 size_t DetectDigit(const Digit& digit)
 {
-    std::string digitHash = digit.lines[0] + digit.lines[1] + digit.lines[2];
+    const std::string digitHash = digit.lines[0] + digit.lines[1] + digit.lines[2];
     return g_digitsMap[digitHash];
 }
 
-TEST(BankOcr, TestDetectDigit9)
+TEST(BankOcr, TestDetectValidDigits)
 {
-    EXPECT_EQ(9, DetectDigit(s_digit9));
-}
-
-TEST(BankOcr, TestDetectDigit8)
-{
+    EXPECT_EQ(0, DetectDigit(s_digit0));
+    EXPECT_EQ(1, DetectDigit(s_digit1));
+    EXPECT_EQ(2, DetectDigit(s_digit2));
+    EXPECT_EQ(3, DetectDigit(s_digit3));
+    EXPECT_EQ(4, DetectDigit(s_digit4));
+    EXPECT_EQ(5, DetectDigit(s_digit5));
+    EXPECT_EQ(6, DetectDigit(s_digit6));
+    EXPECT_EQ(7, DetectDigit(s_digit7));
     EXPECT_EQ(8, DetectDigit(s_digit8));
+    EXPECT_EQ(9, DetectDigit(s_digit9));
 }
