@@ -286,6 +286,15 @@ TEST(BankOcr, TestParseDigit1FromDisplayNumber0)
     EXPECT_EQ(s_digit1.lines[2], digit.lines[2]);
 }
 
+TEST(BankOcr, TestParseDigit2FromDisplayNumber2)
+{
+    const Digit digit = ParseDigitFromDisplay(s_display123456789, 1);
+
+    EXPECT_EQ(s_digit2.lines[0], digit.lines[0]);
+    EXPECT_EQ(s_digit2.lines[1], digit.lines[1]);
+    EXPECT_EQ(s_digit2.lines[2], digit.lines[2]);
+}
+
 TEST(BankOcr, TestExceptionWhenParseUnknownDisplayOffset)
 {
     EXPECT_THROW(ParseDigitFromDisplay(s_display123456789, 10), std::runtime_error);
