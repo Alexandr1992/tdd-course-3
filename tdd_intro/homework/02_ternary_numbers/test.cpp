@@ -32,9 +32,15 @@ size_t ConvertTernaryToDecimal(size_t numerical, size_t position)
 
 size_t ConvertTernaryToDecimal(const std::string& ternary)
 {
-    char symbChar = ternary[0];
-    int numb = std::atoi(&symbChar);
-    return ConvertTernaryToDecimal(static_cast<size_t>(numb), 0);
+    size_t result = 0;
+    size_t position = ternary.size();
+    for (const char ternarySymbChar: ternary)
+    {
+        int ternaryNumb = std::atoi(&ternarySymbChar);
+        result += ConvertTernaryToDecimal(static_cast<size_t>(ternaryNumb), --position);
+    }
+
+    return result;
 }
 
 TEST(TernaryNumber, TestConvertTernaryNum_Pos0_ToDecimal)
