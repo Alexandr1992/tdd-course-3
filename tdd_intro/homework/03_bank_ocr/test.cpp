@@ -100,7 +100,7 @@ struct Display
     std::string lines[g_linesInDigit];
 };
 
-std::map<std::string, size_t> g_digitsMap{
+std::map<std::string, char> g_digitsMap{
     { " _ | ||_|", '0'},
     { "     |  |", '1'},
     { " _  _||_ ", '2'},
@@ -227,6 +227,18 @@ std::string ParseDigits(const Display& display)
     return "0";
 }
 
+Digit ParseDigitFromDisplay(const Display& display, size_t pos)
+{
+    Digit digit;
+    const size_t offset = pos * g_digitLen;
+    for(size_t i = 0; i < g_linesInDigit; ++i)
+    {
+        digit.lines[i] = display.lines[i].substr(offset, g_digitLen);
+    }
+
+    return digit;
+}
+
 TEST(BankOcr, TestDetectValidDigits)
 {
     EXPECT_EQ('0', DetectDigit(s_digit0));
@@ -250,7 +262,16 @@ TEST(BankOcr, TestThrowExceptionWhenDetectInvalidDigits)
     EXPECT_THROW(DetectDigit(invalidDigit), std::runtime_error);
 }
 
-TEST(BankOcr, TestParseFirstDigitFromDisplay0)
+TEST(BankOcr, DISABLED_TestParseFirstDigitFromDisplay0)
 {
     EXPECT_EQ('0', ParseDigits(s_displayAll0)[0]);
+}
+
+TEST(BankOcr, TestParseDigit1FromDisplayNumber0)
+{
+    const Digit digit = ParseDigitFromDisplay(s_display123456789, 0);
+
+    EXPECT_EQ(s_digit1.lines[0], digit.lines[0]);
+    EXPECT_EQ(s_digit1.lines[1], digit.lines[1]);
+    EXPECT_EQ(s_digit1.lines[2], digit.lines[2]);
 }
