@@ -228,3 +228,12 @@ TEST(BankOcr, TestDetectValidDigits)
     EXPECT_EQ(8, DetectDigit(s_digit8));
     EXPECT_EQ(9, DetectDigit(s_digit9));
 }
+
+TEST(BankOcr, TestThrowExceptionWhenDetectInvalidDigits)
+{
+    const static Digit invalidDigit = { " _ ",
+                            "| |",
+                            "| |"};
+
+    EXPECT_THROW(DetectDigit(invalidDigit), std::runtime_error);
+}
