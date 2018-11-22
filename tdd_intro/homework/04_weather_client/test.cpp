@@ -142,7 +142,13 @@ public:
 
     virtual double GetMaximumTemperature(IWeatherServer& server, const std::string& date) override
     {
-        throw std::runtime_error("not implemented");
+        std::set<double> temperatures;
+        temperatures.emplace(GetWeatherByDate(server, date + s_responseDataSeprator + s_threeAM).temperature);
+        temperatures.emplace(GetWeatherByDate(server, date + s_responseDataSeprator + s_nineAM).temperature);
+        temperatures.emplace(GetWeatherByDate(server, date + s_responseDataSeprator + s_threePM).temperature);
+        temperatures.emplace(GetWeatherByDate(server, date + s_responseDataSeprator + s_ninePM).temperature);
+
+        return *temperatures.rbegin();
     }
 
     virtual double GetAverageWindDirection(IWeatherServer& server, const std::string& date) override
@@ -221,6 +227,6 @@ TEST(WeatherClient, TestGetMaximumTemperature_3pm)
     EXPECT_CALL(server, GetWeather("31.08.2018;15:00")).WillOnce(testing::Return("30;0;0"));
     EXPECT_CALL(server, GetWeather("31.08.2018;21:00")).WillOnce(testing::Return("5;0;0"));
 
-    EXPECT_EQ(5, client.GetMaximumTemperature(server, "31.08.2018"));
+    EXPECT_EQ(30, client.GetMaximumTemperature(server, "31.08.2018"));
 }
 
