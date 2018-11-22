@@ -47,6 +47,8 @@ IMPORTANT:
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
+static const char s_responseDataSeprator = ';';
+
 struct Weather
 {
     short temperature = 0;
@@ -84,7 +86,7 @@ Weather ParseWeather(const std::string& response)
 {
     Weather weather;
 
-    int temperatureEndOffset = response.find(';');
+    int temperatureEndOffset = response.find(s_responseDataSeprator);
     std::string temperature = response.substr(0, temperatureEndOffset);
     weather.temperature = std::atoi(temperature.c_str());
 
@@ -95,4 +97,9 @@ TEST(WeatherClient, TestParseTemperatureFromResponse)
 {
     Weather weather = ParseWeather("1;1;1");
     EXPECT_EQ(1, weather.temperature);
+}
+
+TEST(WeatherClient, TestThrowWhenCannotParseTemperature)
+{
+    EXPECT_THROW(ParseWeather("1"), std::runtime_error);
 }
