@@ -121,3 +121,9 @@ TEST(WeatherClient, TestParseWindDirectionFromResponse)
     Weather weather = ParseWeather("1;1;1");
     EXPECT_EQ(1, weather.windDirection);
 }
+
+TEST(WeatherClient, TestParseWindSpeedFromResponse)
+{
+    Weather weather = ParseWeather("1;1;1");
+    EXPECT_EQ(1, weather.windSpeed);
+}
