@@ -108,3 +108,9 @@ TEST(WeatherClient, TestThrowWhenCannotParseTemperature)
 {
     EXPECT_THROW(ParseWeather("1"), std::runtime_error);
 }
+
+TEST(WeatherClient, TestParseWindDirectionFromResponse)
+{
+    Weather weather = ParseWeather("1;1;1");
+    EXPECT_EQ(1, weather.windDirection);
+}
