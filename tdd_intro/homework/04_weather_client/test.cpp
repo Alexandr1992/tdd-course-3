@@ -87,6 +87,11 @@ Weather ParseWeather(const std::string& response)
     Weather weather;
 
     int temperatureEndOffset = response.find(s_responseDataSeprator);
+    if (temperatureEndOffset == std::string::npos)
+    {
+        throw std::runtime_error("Cannot parse temperature");
+    }
+
     std::string temperature = response.substr(0, temperatureEndOffset);
     weather.temperature = std::atoi(temperature.c_str());
 
