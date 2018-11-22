@@ -70,6 +70,12 @@ public:
     virtual std::string GetWeather(const std::string& request) = 0;
 };
 
+class MockWeatherServer : public IWeatherServer
+{
+public:
+    MOCK_METHOD1(GetWeather, std::string(const std::string& request));
+};
+
 // Implement this interface
 class IWeatherClient
 {
@@ -81,6 +87,36 @@ public:
     virtual double GetAverageWindDirection(IWeatherServer& server, const std::string& date) = 0;
     virtual double GetMaximumWindSpeed(IWeatherServer& server, const std::string& date) = 0;
 };
+
+
+class WeatherClient : public IWeatherClient
+{
+public:
+    virtual double GetAverageTemperature(IWeatherServer& server, const std::string& date) override
+    {
+        throw std::runtime_error("not implemented");
+    }
+    virtual double GetMinimumTemperature(IWeatherServer& server, const std::string& date)
+    {
+        throw std::runtime_error("not implemented");
+    }
+
+    virtual double GetMaximumTemperature(IWeatherServer& server, const std::string& date) override
+    {
+        throw std::runtime_error("not implemented");
+    }
+
+    virtual double GetAverageWindDirection(IWeatherServer& server, const std::string& date) override
+    {
+        throw std::runtime_error("not implemented");
+    }
+
+    virtual double GetMaximumWindSpeed(IWeatherServer& server, const std::string& date) override
+    {
+        throw std::runtime_error("not implemented");
+    }
+};
+
 
 
 double GetLineDoble(std::istringstream& stream)
@@ -143,3 +179,14 @@ TEST(WeatherClient, TestParseDoubleWindSpeedFromResponse)
     Weather weather = ParseWeather("1;1;4.6");
     EXPECT_EQ(4.6, weather.windSpeed);
 }
+
+//Test client
+
+TEST(WeatherClient, TestGetMinimumTemperature)
+{
+    MockWeatherServer server;
+    WeatherClient client;
+
+    EXPECT_EQ(5, client.GetMinimumTemperature(server, "31.08.2018"));
+}
+
