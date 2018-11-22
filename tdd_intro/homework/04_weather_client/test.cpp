@@ -82,22 +82,25 @@ public:
     virtual double GetMaximumWindSpeed(IWeatherServer& server, const std::string& date) = 0;
 };
 
+
+double GetLineDoble(std::istringstream& stream)
+{
+    std::string value;
+    if (!std::getline(stream, value, s_responseDataSeprator))
+    {
+        throw std::runtime_error("Error parsing");
+    }
+
+    return std::stod(value);
+}
+
 Weather ParseWeather(const std::string& response)
 {
     Weather weather;
+    std::istringstream responseStream(response);
 
-    int temperatureEndOffset = response.find(s_responseDataSeprator);
-    if (temperatureEndOffset == std::string::npos)
-    {
-        throw std::runtime_error("Cannot parse temperature");
-    }
-
-    std::string temperature = response.substr(0, temperatureEndOffset);
-    weather.temperature = std::atoi(temperature.c_str());
-
-    int directionEndOffset = response.find(s_responseDataSeprator, temperatureEndOffset);
-    std::string windDirection = response.substr(temperatureEndOffset + 1, directionEndOffset);
-    weather.windDirection = std::atoi(windDirection.c_str());
+    weather.temperature = GetLineDoble(responseStream);
+    weather.windDirection = GetLineDoble(responseStream);
 
     return weather;
 }
