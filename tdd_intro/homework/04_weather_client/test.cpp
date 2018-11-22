@@ -101,6 +101,7 @@ Weather ParseWeather(const std::string& response)
 
     weather.temperature = GetLineDoble(responseStream);
     weather.windDirection = GetLineDoble(responseStream);
+    weather.windSpeed = GetLineDoble(responseStream);
 
     return weather;
 }
