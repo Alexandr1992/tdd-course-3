@@ -49,6 +49,11 @@ IMPORTANT:
 
 static const char s_responseDataSeprator = ';';
 
+static const std::string s_nineAM = "09:00";
+static const std::string s_ninePM = "21:00";
+static const std::string s_threeAM = "03:00";
+static const std::string s_threePM = "15:00";
+
 struct Weather
 {
     short temperature = 0;
@@ -126,24 +131,13 @@ public:
     }
     virtual double GetMinimumTemperature(IWeatherServer& server, const std::string& date)
     {
-        auto t1 = GetWeatherByDate(server, date + ";03:00").temperature;
-        auto t2 = GetWeatherByDate(server, date + ";09:00").temperature;
-        if (t2 < t1)
-        {
-            t1 = t2;
-        }
-        auto t3 = GetWeatherByDate(server, date + ";15:00").temperature;
-        if (t3 < t1)
-        {
-            t1 = t3;
-        }
-        auto t4 = GetWeatherByDate(server, date + ";21:00").temperature;
-        if (t4 < t1)
-        {
-            t1 = t4;
-        }
+        std::set<double> temperatures;
+        temperatures.emplace(GetWeatherByDate(server, date + s_responseDataSeprator + s_threeAM).temperature);
+        temperatures.emplace(GetWeatherByDate(server, date + s_responseDataSeprator + s_nineAM).temperature);
+        temperatures.emplace(GetWeatherByDate(server, date + s_responseDataSeprator + s_threePM).temperature);
+        temperatures.emplace(GetWeatherByDate(server, date + s_responseDataSeprator + s_ninePM).temperature);
 
-        return t1;
+        return *temperatures.begin();
     }
 
     virtual double GetMaximumTemperature(IWeatherServer& server, const std::string& date) override
@@ -204,7 +198,7 @@ TEST(WeatherClient, TestParseDoubleWindSpeedFromResponse)
 
 //Test client
 
-TEST(WeatherClient, TestGetMinimumTemperature)
+TEST(WeatherClient, TestGetMinimumTemperature_21pm)
 {
     MockWeatherServer server;
     WeatherClient client;
