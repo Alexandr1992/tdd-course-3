@@ -79,3 +79,17 @@ public:
     virtual double GetAverageWindDirection(IWeatherServer& server, const std::string& date) = 0;
     virtual double GetMaximumWindSpeed(IWeatherServer& server, const std::string& date) = 0;
 };
+
+Weather ParseWeather(const std::string& response)
+{
+    Weather weather;
+
+    return weather;
+}
+
+
+TEST(WeatherClient, TestParseTemperatureFromResponse)
+{
+    Weather weather = ParseWeather("1;1;1");
+    EXPECT_EQ(1, weather.temperature);
+}
