@@ -62,6 +62,34 @@ struct Weather
     }
 };
 
+double GetLineDoble(std::istringstream& stream)
+{
+    std::string value;
+    if (!std::getline(stream, value, s_responseDataSeprator))
+    {
+        throw std::runtime_error("Error parsing");
+    }
+
+    return std::stod(value);
+}
+
+Weather ParseWeather(const std::string& response)
+{
+    Weather weather;
+    std::istringstream responseStream(response);
+
+    weather.temperature = static_cast<short>(GetLineDoble(responseStream));
+    weather.windDirection = static_cast<unsigned short>(GetLineDoble(responseStream));
+    if(weather.windDirection > 359)
+    {
+        throw std::runtime_error("Invalid paserd value for wind direction");
+    }
+
+    weather.windSpeed = GetLineDoble(responseStream);
+
+    return weather;
+}
+
 class IWeatherServer
 {
 public:
@@ -98,7 +126,24 @@ public:
     }
     virtual double GetMinimumTemperature(IWeatherServer& server, const std::string& date)
     {
-        throw std::runtime_error("not implemented");
+        auto t1 = GetWeatherByDate(server, date + ";03:00").temperature;
+        auto t2 = GetWeatherByDate(server, date + ";09:00").temperature;
+        if (t2 < t1)
+        {
+            t1 = t2;
+        }
+        auto t3 = GetWeatherByDate(server, date + ";15:00").temperature;
+        if (t3 < t1)
+        {
+            t1 = t3;
+        }
+        auto t4 = GetWeatherByDate(server, date + ";21:00").temperature;
+        if (t4 < t1)
+        {
+            t1 = t4;
+        }
+
+        return t1;
     }
 
     virtual double GetMaximumTemperature(IWeatherServer& server, const std::string& date) override
@@ -115,37 +160,14 @@ public:
     {
         throw std::runtime_error("not implemented");
     }
+
+private:
+    Weather GetWeatherByDate(IWeatherServer& server, const std::string& date)
+    {
+        std::string response = server.GetWeather(date);
+        return ParseWeather(response);
+    }
 };
-
-
-
-double GetLineDoble(std::istringstream& stream)
-{
-    std::string value;
-    if (!std::getline(stream, value, s_responseDataSeprator))
-    {
-        throw std::runtime_error("Error parsing");
-    }
-
-    return std::stod(value);
-}
-
-Weather ParseWeather(const std::string& response)
-{
-    Weather weather;
-    std::istringstream responseStream(response);
-
-    weather.temperature = static_cast<short>(GetLineDoble(responseStream));
-    weather.windDirection = static_cast<unsigned short>(GetLineDoble(responseStream));
-    if(weather.windDirection > 359)
-    {
-        throw std::runtime_error("Invalid paserd value for wind direction");
-    }
-
-    weather.windSpeed = GetLineDoble(responseStream);
-
-    return weather;
-}
 
 TEST(WeatherClient, TestParseTemperatureFromResponse)
 {
@@ -186,6 +208,11 @@ TEST(WeatherClient, TestGetMinimumTemperature)
 {
     MockWeatherServer server;
     WeatherClient client;
+
+    EXPECT_CALL(server, GetWeather("31.08.2018;03:00")).WillOnce(testing::Return("20;0;0"));
+    EXPECT_CALL(server, GetWeather("31.08.2018;09:00")).WillOnce(testing::Return("6;0;0"));
+    EXPECT_CALL(server, GetWeather("31.08.2018;15:00")).WillOnce(testing::Return("7;0;0"));
+    EXPECT_CALL(server, GetWeather("31.08.2018;21:00")).WillOnce(testing::Return("5;0;0"));
 
     EXPECT_EQ(5, client.GetMinimumTemperature(server, "31.08.2018"));
 }
