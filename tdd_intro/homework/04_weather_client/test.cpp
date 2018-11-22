@@ -211,3 +211,16 @@ TEST(WeatherClient, TestGetMinimumTemperature_21pm)
     EXPECT_EQ(5, client.GetMinimumTemperature(server, "31.08.2018"));
 }
 
+TEST(WeatherClient, TestGetMaximumTemperature_3pm)
+{
+    MockWeatherServer server;
+    WeatherClient client;
+
+    EXPECT_CALL(server, GetWeather("31.08.2018;03:00")).WillOnce(testing::Return("20;0;0"));
+    EXPECT_CALL(server, GetWeather("31.08.2018;09:00")).WillOnce(testing::Return("6;0;0"));
+    EXPECT_CALL(server, GetWeather("31.08.2018;15:00")).WillOnce(testing::Return("30;0;0"));
+    EXPECT_CALL(server, GetWeather("31.08.2018;21:00")).WillOnce(testing::Return("5;0;0"));
+
+    EXPECT_EQ(5, client.GetMaximumTemperature(server, "31.08.2018"));
+}
+
