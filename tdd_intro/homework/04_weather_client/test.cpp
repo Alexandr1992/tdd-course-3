@@ -101,6 +101,11 @@ Weather ParseWeather(const std::string& response)
 
     weather.temperature = static_cast<short>(GetLineDoble(responseStream));
     weather.windDirection = static_cast<unsigned short>(GetLineDoble(responseStream));
+    if(weather.windDirection > 359)
+    {
+        throw std::runtime_error("Invalid paserd value for wind direction");
+    }
+
     weather.windSpeed = GetLineDoble(responseStream);
 
     return weather;
@@ -125,7 +130,7 @@ TEST(WeatherClient, TestParseWindDirectionFromResponse)
 
 TEST(WeatherClient, TestParseInvalidWindDirectionFromResponse)
 {
-    EXPECT_THROW(ParseWeather("1;401;1"), std::runtime_error);
+    EXPECT_THROW(ParseWeather("1;360;1"), std::runtime_error);
 }
 TEST(WeatherClient, TestParseWindSpeedFromResponse)
 {
