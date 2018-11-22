@@ -99,8 +99,8 @@ Weather ParseWeather(const std::string& response)
     Weather weather;
     std::istringstream responseStream(response);
 
-    weather.temperature = GetLineDoble(responseStream);
-    weather.windDirection = GetLineDoble(responseStream);
+    weather.temperature = static_cast<short>(GetLineDoble(responseStream));
+    weather.windDirection = static_cast<unsigned short>(GetLineDoble(responseStream));
     weather.windSpeed = GetLineDoble(responseStream);
 
     return weather;
@@ -123,8 +123,18 @@ TEST(WeatherClient, TestParseWindDirectionFromResponse)
     EXPECT_EQ(1, weather.windDirection);
 }
 
+TEST(WeatherClient, TestParseInvalidWindDirectionFromResponse)
+{
+    EXPECT_THROW(ParseWeather("1;401;1"), std::runtime_error);
+}
 TEST(WeatherClient, TestParseWindSpeedFromResponse)
 {
     Weather weather = ParseWeather("1;1;1");
     EXPECT_EQ(1, weather.windSpeed);
+}
+
+TEST(WeatherClient, TestParseDoubleWindSpeedFromResponse)
+{
+    Weather weather = ParseWeather("1;1;4.6");
+    EXPECT_EQ(4.6, weather.windSpeed);
 }
