@@ -100,6 +100,19 @@ struct Display
     std::string lines[g_linesInDigit];
 };
 
+const std::map<std::string, char> s_digitsMap{
+    { " _ | ||_|", '0'},
+    { "     |  |", '1'},
+    { " _  _||_ ", '2'},
+    { " _  _| _|", '3'},
+    { "   |_|  |", '4'},
+    { " _ |_  _|", '5'},
+    { " _ |_ |_|", '6'},
+    { " _   |  |", '7'},
+    { " _ |_||_|", '8'},
+    { " _ |_| _|", '9'}
+};
+
 const Digit s_digit0 = { " _ ",
                          "| |",
                          "|_|"
@@ -195,3 +208,118 @@ const Display s_display123456789 = { "    _  _     _  _  _  _  _ ",
                                      "  | _| _||_||_ |_   ||_||_|",
                                      "  ||_  _|  | _||_|  ||_| _|"
 };
+
+char DetectDigit(const Digit& digit)
+{
+    const std::string digitHash = digit.lines[0] + digit.lines[1] + digit.lines[2];
+
+    const auto& value = s_digitsMap.find(digitHash);
+    if (value != s_digitsMap.end())
+    {
+        return value->second;
+    }
+
+    throw std::runtime_error("Invalid digit format");
+}
+
+Digit ParseDigitFromDisplay(const Display& display, size_t digitPos)
+{
+    if (digitPos > 9)
+    {
+        throw std::runtime_error("Invalid display offset");
+    }
+
+    Digit digit;
+    const size_t offset = digitPos * g_digitLen;
+    for(size_t i = 0; i < g_linesInDigit; ++i)
+    {
+        digit.lines[i] = display.lines[i].substr(offset, g_digitLen);
+    }
+
+    return digit;
+}
+
+
+std::string ParseDigits(const Display& display)
+{
+    std::string finalDigits;
+    for (size_t i = 0; i < g_digitsOnDisplay; ++i)
+    {
+        Digit digit = ParseDigitFromDisplay(display, i);
+        finalDigits += DetectDigit(digit);
+    }
+
+    return finalDigits;
+}
+
+TEST(BankOcr, TestDetectValidDigits)
+{
+    EXPECT_EQ('0', DetectDigit(s_digit0));
+    EXPECT_EQ('1', DetectDigit(s_digit1));
+    EXPECT_EQ('2', DetectDigit(s_digit2));
+    EXPECT_EQ('3', DetectDigit(s_digit3));
+    EXPECT_EQ('4', DetectDigit(s_digit4));
+    EXPECT_EQ('5', DetectDigit(s_digit5));
+    EXPECT_EQ('6', DetectDigit(s_digit6));
+    EXPECT_EQ('7', DetectDigit(s_digit7));
+    EXPECT_EQ('8', DetectDigit(s_digit8));
+    EXPECT_EQ('9', DetectDigit(s_digit9));
+}
+
+TEST(BankOcr, TestThrowExceptionWhenDetectInvalidDigits)
+{
+    const static Digit invalidDigit = { " _ ",
+                                        "| |",
+                                        "| |"};
+
+    EXPECT_THROW(DetectDigit(invalidDigit), std::runtime_error);
+}
+
+TEST(BankOcr, TestParseFirstDigitFromDisplay0)
+{
+    EXPECT_EQ('0', ParseDigits(s_displayAll0)[0]);
+}
+
+TEST(BankOcr, TestParseFirstDigitFromDisplay1)
+{
+    EXPECT_EQ('2', ParseDigits(s_display123456789)[1]);
+}
+
+TEST(BankOcr, TestParseDigit1FromDisplayNumber0)
+{
+    const Digit digit = ParseDigitFromDisplay(s_display123456789, 0);
+
+    EXPECT_EQ(s_digit1.lines[0], digit.lines[0]);
+    EXPECT_EQ(s_digit1.lines[1], digit.lines[1]);
+    EXPECT_EQ(s_digit1.lines[2], digit.lines[2]);
+}
+
+TEST(BankOcr, TestParseDigit2FromDisplayNumber2)
+{
+    const Digit digit = ParseDigitFromDisplay(s_display123456789, 1);
+
+    EXPECT_EQ(s_digit2.lines[0], digit.lines[0]);
+    EXPECT_EQ(s_digit2.lines[1], digit.lines[1]);
+    EXPECT_EQ(s_digit2.lines[2], digit.lines[2]);
+}
+
+TEST(BankOcr, TestExceptionWhenParseUnknownDisplayOffset)
+{
+    EXPECT_THROW(ParseDigitFromDisplay(s_display123456789, 10), std::runtime_error);
+}
+
+TEST(BankOcr, AcceptanceTest)
+{
+    EXPECT_EQ("000000000", ParseDigits(s_displayAll0));
+    EXPECT_EQ("111111111", ParseDigits(s_displayAll1));
+    EXPECT_EQ("222222222", ParseDigits(s_displayAll2));
+    EXPECT_EQ("333333333", ParseDigits(s_displayAll3));
+    EXPECT_EQ("444444444", ParseDigits(s_displayAll4));
+    EXPECT_EQ("555555555", ParseDigits(s_displayAll5));
+    EXPECT_EQ("666666666", ParseDigits(s_displayAll6));
+    EXPECT_EQ("777777777", ParseDigits(s_displayAll7));
+    EXPECT_EQ("888888888", ParseDigits(s_displayAll8));
+    EXPECT_EQ("999999999", ParseDigits(s_displayAll9));
+    EXPECT_EQ("123456789", ParseDigits(s_display123456789));
+
+}
