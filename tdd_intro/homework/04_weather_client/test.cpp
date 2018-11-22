@@ -84,9 +84,12 @@ Weather ParseWeather(const std::string& response)
 {
     Weather weather;
 
+    int temperatureEndOffset = response.find(';');
+    std::string temperature = response.substr(0, temperatureEndOffset);
+    weather.temperature = std::atoi(temperature.c_str());
+
     return weather;
 }
-
 
 TEST(WeatherClient, TestParseTemperatureFromResponse)
 {
