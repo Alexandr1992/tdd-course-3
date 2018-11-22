@@ -95,6 +95,10 @@ Weather ParseWeather(const std::string& response)
     std::string temperature = response.substr(0, temperatureEndOffset);
     weather.temperature = std::atoi(temperature.c_str());
 
+    int directionEndOffset = response.find(s_responseDataSeprator, temperatureEndOffset);
+    std::string windDirection = response.substr(temperatureEndOffset + 1, directionEndOffset);
+    weather.windDirection = std::atoi(windDirection.c_str());
+
     return weather;
 }
 
