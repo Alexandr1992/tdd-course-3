@@ -60,7 +60,7 @@ public:
 
     void PrepareAmericano(CupSize size)
     {
-        if(size == CupSize::Little)
+        if (size == CupSize::Little)
         {
             m_ingredients->AddWater(50, s_americanoWaterTemp);
             m_ingredients->AddCoffee(100);
@@ -86,12 +86,24 @@ TEST(CoffeeMashine, TestAmericanoWaterRatioLittleCup)
     CofffeeMachine machine(&ingredients);
 
     size_t watter;
-    EXPECT_CALL(ingredients, AddWater(testing::_, testing::_)).WillOnce(testing::SaveArg<0>(&watter));
-
     size_t coffee;
+    EXPECT_CALL(ingredients, AddWater(testing::_, testing::_)).WillOnce(testing::SaveArg<0>(&watter));
     EXPECT_CALL(ingredients, AddCoffee(testing::_)).WillOnce(testing::SaveArg<0>(&coffee));
 
     machine.PrepareAmericano(CupSize::Little);
+    EXPECT_EQ(coffee / 2, watter);
+}
 
+TEST(CoffeeMashine, TestAmericanoWaterRatioBigCup)
+{
+    MockSourceOfIngredients ingredients;
+    CofffeeMachine machine(&ingredients);
+
+    size_t watter;
+    size_t coffee;
+    EXPECT_CALL(ingredients, AddWater(testing::_, testing::_)).WillOnce(testing::SaveArg<0>(&watter));
+    EXPECT_CALL(ingredients, AddCoffee(testing::_)).WillOnce(testing::SaveArg<0>(&coffee));
+
+    machine.PrepareAmericano(CupSize::Big);
     EXPECT_EQ(coffee / 2, watter);
 }
