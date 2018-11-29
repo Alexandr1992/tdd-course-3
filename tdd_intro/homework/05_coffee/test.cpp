@@ -118,3 +118,13 @@ TEST(CoffeeMashine, TestAmericanoWaterRatioBigCup)
     machine.PrepareAmericano(CupSize::Big);
     EXPECT_EQ(coffee / 2, watter);
 }
+
+TEST(CoffeeMashine, TestCappuccinoWatterTemp)
+{
+    MockSourceOfIngredients ingredients;
+    CofffeeMachine machine(&ingredients);
+
+    EXPECT_CALL(ingredients, AddWater(testing::_, 80));
+    EXPECT_CALL(ingredients, AddCoffee(testing::_));
+    machine.PrepareAmericano(CupSize::Little);
+}
