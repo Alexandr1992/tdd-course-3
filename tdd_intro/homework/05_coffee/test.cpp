@@ -52,6 +52,7 @@ public:
 
     void PrepareAmericano()
     {
+        m_ingredients->AddWater(0, 60);
     }
 
 private:
@@ -63,7 +64,7 @@ TEST(CoffeeMashine, TestWaterTempAmericano)
     MockSourceOfIngredients ingredients;
     CofffeeMachine machine(&ingredients);
 
-    EXPECT_CALL(ingredients, AddWater(testing::_, 80));
+    EXPECT_CALL(ingredients, AddWater(testing::_, 60));
 
     machine.PrepareAmericano();
 }
