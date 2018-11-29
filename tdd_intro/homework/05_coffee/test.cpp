@@ -46,15 +46,24 @@ public:
 
 const static size_t s_americanoWaterTemp = 60;
 
+enum class CupSize
+{
+    Little = 0,
+    Big
+};
+
 class CofffeeMachine
 {
 public:
     explicit CofffeeMachine(ISourceOfIngredients* ingredients)
         : m_ingredients(ingredients){}
 
-    void PrepareAmericano()
+    void PrepareAmericano(CupSize size)
     {
-        m_ingredients->AddWater(0, s_americanoWaterTemp);
+        if(size == CupSize::Little)
+        {
+            m_ingredients->AddWater(50, s_americanoWaterTemp);
+        }
     }
 
 private:
@@ -67,5 +76,21 @@ TEST(CoffeeMashine, TestAmericanoWaterTemp)
     CofffeeMachine machine(&ingredients);
 
     EXPECT_CALL(ingredients, AddWater(testing::_, s_americanoWaterTemp));
-    machine.PrepareAmericano();
+    machine.PrepareAmericano(CupSize::Little);
+}
+
+TEST(CoffeeMashine, TestAmericanoWaterRatioLittleCup)
+{
+    MockSourceOfIngredients ingredients;
+    CofffeeMachine machine(&ingredients);
+
+    size_t watter;
+    EXPECT_CALL(ingredients, AddWater(testing::_, testing::_)).WillOnce(testing::SaveArg<0>(&watter));
+
+    size_t coffee;
+    EXPECT_CALL(ingredients, AddCoffee(testing::_)).WillOnce(testing::SaveArg<0>(&coffee));
+
+    machine.PrepareAmericano(CupSize::Little);
+
+    EXPECT_EQ(coffee / 2, watter);
 }
