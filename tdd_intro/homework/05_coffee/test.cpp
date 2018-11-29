@@ -30,3 +30,40 @@ public:
     virtual void AddChocolate(int gram) = 0;
     virtual void AddCream(int gram) = 0;
 };
+
+class MockSourceOfIngredients : public ISourceOfIngredients
+{
+public:
+    MOCK_METHOD1(SetCupSize,    void(int gram));
+    MOCK_METHOD2(AddWater,      void(int gram, int temperature));
+    MOCK_METHOD1(AddSugar,      void(int gram));
+    MOCK_METHOD1(AddCoffee,     void(int gram));
+    MOCK_METHOD1(AddMilk,       void(int gram));
+    MOCK_METHOD1(AddMilkFoam,   void(int gram));
+    MOCK_METHOD1(AddChocolate,  void(int gram));
+    MOCK_METHOD1(AddCream,      void(int gram));
+};
+
+class CofffeeMachine
+{
+public:
+    explicit CofffeeMachine(ISourceOfIngredients* ingredients)
+        : m_ingredients(ingredients){}
+
+    void PrepareAmericano()
+    {
+    }
+
+private:
+    ISourceOfIngredients* m_ingredients;
+};
+
+TEST(CoffeeMashine, TestWaterTempAmericano)
+{
+    MockSourceOfIngredients ingredients;
+    CofffeeMachine machine(&ingredients);
+
+    EXPECT_CALL(ingredients, AddWater(testing::_, 80));
+
+    machine.PrepareAmericano();
+}
