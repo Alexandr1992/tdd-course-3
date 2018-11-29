@@ -44,6 +44,8 @@ public:
     MOCK_METHOD1(AddCream,      void(int gram));
 };
 
+const static size_t s_americanoWaterTemp = 60;
+
 class CofffeeMachine
 {
 public:
@@ -52,19 +54,18 @@ public:
 
     void PrepareAmericano()
     {
-        m_ingredients->AddWater(0, 60);
+        m_ingredients->AddWater(0, s_americanoWaterTemp);
     }
 
 private:
     ISourceOfIngredients* m_ingredients;
 };
 
-TEST(CoffeeMashine, TestWaterTempAmericano)
+TEST(CoffeeMashine, TestAmericanoWaterTemp)
 {
     MockSourceOfIngredients ingredients;
     CofffeeMachine machine(&ingredients);
 
-    EXPECT_CALL(ingredients, AddWater(testing::_, 60));
-
+    EXPECT_CALL(ingredients, AddWater(testing::_, s_americanoWaterTemp));
     machine.PrepareAmericano();
 }
