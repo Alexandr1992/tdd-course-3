@@ -63,6 +63,7 @@ public:
         if(size == CupSize::Little)
         {
             m_ingredients->AddWater(50, s_americanoWaterTemp);
+            m_ingredients->AddCoffee(100);
         }
     }
 
