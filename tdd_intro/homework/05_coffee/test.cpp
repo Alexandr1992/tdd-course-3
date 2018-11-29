@@ -111,6 +111,7 @@ private:
 
         const size_t cup_size = GetCupSize(size);
         m_ingredients->AddMilk(cup_size / 3);
+        m_ingredients->AddCoffee(cup_size / 3);
     }
 
 private:
