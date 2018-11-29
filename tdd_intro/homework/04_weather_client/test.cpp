@@ -47,6 +47,13 @@ IMPORTANT:
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
+static const char s_responseDataSeprator = ';';
+
+static const std::string s_nineAM = "09:00";
+static const std::string s_ninePM = "21:00";
+static const std::string s_threeAM = "03:00";
+static const std::string s_threePM = "15:00";
+
 struct Weather
 {
     short temperature = 0;
@@ -60,12 +67,46 @@ struct Weather
     }
 };
 
+double GetLineDoble(std::istringstream& stream)
+{
+    std::string value;
+    if (!std::getline(stream, value, s_responseDataSeprator))
+    {
+        throw std::runtime_error("Error parsing");
+    }
+
+    return std::stod(value);
+}
+
+Weather ParseWeather(const std::string& response)
+{
+    Weather weather;
+    std::istringstream responseStream(response);
+
+    weather.temperature = static_cast<short>(GetLineDoble(responseStream));
+    weather.windDirection = static_cast<unsigned short>(GetLineDoble(responseStream));
+    if(weather.windDirection > 359)
+    {
+        throw std::runtime_error("Invalid paserd value for wind direction");
+    }
+
+    weather.windSpeed = GetLineDoble(responseStream);
+
+    return weather;
+}
+
 class IWeatherServer
 {
 public:
     virtual ~IWeatherServer() { }
     // Returns raw response with weather for the given day and time in request
     virtual std::string GetWeather(const std::string& request) = 0;
+};
+
+class MockWeatherServer : public IWeatherServer
+{
+public:
+    MOCK_METHOD1(GetWeather, std::string(const std::string& request));
 };
 
 // Implement this interface
@@ -79,3 +120,113 @@ public:
     virtual double GetAverageWindDirection(IWeatherServer& server, const std::string& date) = 0;
     virtual double GetMaximumWindSpeed(IWeatherServer& server, const std::string& date) = 0;
 };
+
+
+class WeatherClient : public IWeatherClient
+{
+public:
+    virtual double GetAverageTemperature(IWeatherServer& server, const std::string& date) override
+    {
+        throw std::runtime_error("not implemented");
+    }
+    virtual double GetMinimumTemperature(IWeatherServer& server, const std::string& date)
+    {
+        std::set<double> temperatures;
+        temperatures.emplace(GetWeatherByDate(server, date + s_responseDataSeprator + s_threeAM).temperature);
+        temperatures.emplace(GetWeatherByDate(server, date + s_responseDataSeprator + s_nineAM).temperature);
+        temperatures.emplace(GetWeatherByDate(server, date + s_responseDataSeprator + s_threePM).temperature);
+        temperatures.emplace(GetWeatherByDate(server, date + s_responseDataSeprator + s_ninePM).temperature);
+
+        return *temperatures.begin();
+    }
+
+    virtual double GetMaximumTemperature(IWeatherServer& server, const std::string& date) override
+    {
+        std::set<double> temperatures;
+        temperatures.emplace(GetWeatherByDate(server, date + s_responseDataSeprator + s_threeAM).temperature);
+        temperatures.emplace(GetWeatherByDate(server, date + s_responseDataSeprator + s_nineAM).temperature);
+        temperatures.emplace(GetWeatherByDate(server, date + s_responseDataSeprator + s_threePM).temperature);
+        temperatures.emplace(GetWeatherByDate(server, date + s_responseDataSeprator + s_ninePM).temperature);
+
+        return *temperatures.rbegin();
+    }
+
+    virtual double GetAverageWindDirection(IWeatherServer& server, const std::string& date) override
+    {
+        throw std::runtime_error("not implemented");
+    }
+
+    virtual double GetMaximumWindSpeed(IWeatherServer& server, const std::string& date) override
+    {
+        throw std::runtime_error("not implemented");
+    }
+
+private:
+    Weather GetWeatherByDate(IWeatherServer& server, const std::string& date)
+    {
+        std::string response = server.GetWeather(date);
+        return ParseWeather(response);
+    }
+};
+
+TEST(WeatherClient, TestParseTemperatureFromResponse)
+{
+    Weather weather = ParseWeather("1;1;1");
+    EXPECT_EQ(1, weather.temperature);
+}
+
+TEST(WeatherClient, TestThrowWhenCannotParseTemperature)
+{
+    EXPECT_THROW(ParseWeather("1"), std::runtime_error);
+}
+
+TEST(WeatherClient, TestParseWindDirectionFromResponse)
+{
+    Weather weather = ParseWeather("1;1;1");
+    EXPECT_EQ(1, weather.windDirection);
+}
+
+TEST(WeatherClient, TestParseInvalidWindDirectionFromResponse)
+{
+    EXPECT_THROW(ParseWeather("1;360;1"), std::runtime_error);
+}
+TEST(WeatherClient, TestParseWindSpeedFromResponse)
+{
+    Weather weather = ParseWeather("1;1;1");
+    EXPECT_EQ(1, weather.windSpeed);
+}
+
+TEST(WeatherClient, TestParseDoubleWindSpeedFromResponse)
+{
+    Weather weather = ParseWeather("1;1;4.6");
+    EXPECT_EQ(4.6, weather.windSpeed);
+}
+
+//Test client
+
+TEST(WeatherClient, TestGetMinimumTemperature_21pm)
+{
+    MockWeatherServer server;
+    WeatherClient client;
+
+    EXPECT_CALL(server, GetWeather("31.08.2018;03:00")).WillOnce(testing::Return("20;0;0"));
+    EXPECT_CALL(server, GetWeather("31.08.2018;09:00")).WillOnce(testing::Return("6;0;0"));
+    EXPECT_CALL(server, GetWeather("31.08.2018;15:00")).WillOnce(testing::Return("7;0;0"));
+    EXPECT_CALL(server, GetWeather("31.08.2018;21:00")).WillOnce(testing::Return("5;0;0"));
+
+    EXPECT_EQ(5, client.GetMinimumTemperature(server, "31.08.2018"));
+}
+
+TEST(WeatherClient, TestGetMaximumTemperature_3pm)
+{
+    MockWeatherServer server;
+    WeatherClient client;
+
+    EXPECT_CALL(server, GetWeather("31.08.2018;03:00")).WillOnce(testing::Return("20;0;0"));
+    EXPECT_CALL(server, GetWeather("31.08.2018;09:00")).WillOnce(testing::Return("6;0;0"));
+    EXPECT_CALL(server, GetWeather("31.08.2018;15:00")).WillOnce(testing::Return("30;0;0"));
+    EXPECT_CALL(server, GetWeather("31.08.2018;21:00")).WillOnce(testing::Return("5;0;0"));
+
+    EXPECT_EQ(30, client.GetMaximumTemperature(server, "31.08.2018"));
+}
+
