@@ -30,3 +30,186 @@ public:
     virtual void AddChocolate(int gram) = 0;
     virtual void AddCream(int gram) = 0;
 };
+
+class MockSourceOfIngredients : public ISourceOfIngredients
+{
+public:
+    MOCK_METHOD1(SetCupSize,    void(int gram));
+    MOCK_METHOD2(AddWater,      void(int gram, int temperature));
+    MOCK_METHOD1(AddSugar,      void(int gram));
+    MOCK_METHOD1(AddCoffee,     void(int gram));
+    MOCK_METHOD1(AddMilk,       void(int gram));
+    MOCK_METHOD1(AddMilkFoam,   void(int gram));
+    MOCK_METHOD1(AddChocolate,  void(int gram));
+    MOCK_METHOD1(AddCream,      void(int gram));
+};
+
+const static size_t s_americanoWaterTemp = 60;
+const static size_t s_cappuccinoWaterTemp = 80;
+
+const static size_t s_cupSizeLittle = 100;
+const static size_t s_cupSizeBig = 140;
+
+enum class CupSize
+{
+    Little = 0,
+    Big
+};
+
+enum class DrinkType
+{
+    Americano = 0,
+    Cappuccino
+};
+
+size_t GetCupSize(CupSize size)
+{
+    switch (size) {
+    case CupSize::Little: return s_cupSizeLittle;
+    case CupSize::Big: return s_cupSizeBig;
+    default:
+        throw std::runtime_error("Undefined cup size");
+    }
+}
+
+class CofffeeMachine
+{
+public:
+    explicit CofffeeMachine(ISourceOfIngredients* ingredients)
+        : m_ingredients(ingredients){}
+
+    void Prepare(DrinkType drink, CupSize size = CupSize::Little)
+    {
+        switch (drink)
+        {
+            case DrinkType::Americano:
+                PrepareAmericano(size);
+                break;
+
+            case DrinkType::Cappuccino:
+                PrepareCappuccino(size);
+                break;
+
+        default:
+            throw std::runtime_error("Unknown dink");
+        }
+    }
+
+private:
+    void PrepareAmericano(CupSize size)
+    {
+        const size_t watterGram = GetCupSize(size) / 3;
+        m_ingredients->AddWater(watterGram, s_americanoWaterTemp);
+
+        const size_t coffeeGram = watterGram * 2;
+        m_ingredients->AddCoffee(coffeeGram);
+    }
+
+    void PrepareCappuccino(CupSize size)
+    {
+        m_ingredients->AddWater(0, s_cappuccinoWaterTemp);
+
+        const size_t cup_size = GetCupSize(size);
+        m_ingredients->AddMilk(cup_size / 3);
+        m_ingredients->AddCoffee(cup_size / 3);
+        m_ingredients->AddMilkFoam(cup_size / 3);
+    }
+
+private:
+    ISourceOfIngredients* m_ingredients;
+};
+
+TEST(CoffeeMashine, TestAmericanoWaterTemp)
+{
+    MockSourceOfIngredients ingredients;
+    CofffeeMachine machine(&ingredients);
+
+    EXPECT_CALL(ingredients, AddWater(testing::_, s_americanoWaterTemp));
+    EXPECT_CALL(ingredients, AddCoffee(testing::_));
+    machine.Prepare(DrinkType::Americano);
+}
+
+TEST(CoffeeMashine, TestAmericanoWaterRatioLittleCup)
+{
+    MockSourceOfIngredients ingredients;
+    CofffeeMachine machine(&ingredients);
+
+    size_t watter;
+    size_t coffee;
+    EXPECT_CALL(ingredients, AddWater(testing::_, testing::_)).WillOnce(testing::SaveArg<0>(&watter));
+    EXPECT_CALL(ingredients, AddCoffee(testing::_)).WillOnce(testing::SaveArg<0>(&coffee));
+
+    machine.Prepare(DrinkType::Americano, CupSize::Little);
+    EXPECT_EQ(coffee / 2, watter);
+}
+
+TEST(CoffeeMashine, TestAmericanoWaterRatioBigCup)
+{
+    MockSourceOfIngredients ingredients;
+    CofffeeMachine machine(&ingredients);
+
+    size_t watter;
+    size_t coffee;
+    EXPECT_CALL(ingredients, AddWater(testing::_, testing::_)).WillOnce(testing::SaveArg<0>(&watter));
+    EXPECT_CALL(ingredients, AddCoffee(testing::_)).WillOnce(testing::SaveArg<0>(&coffee));
+
+    machine.Prepare(DrinkType::Americano, CupSize::Big);
+    EXPECT_EQ(coffee / 2, watter);
+}
+
+TEST(CoffeeMashine, TestCappuccinoWatterTemp)
+{
+    MockSourceOfIngredients ingredients;
+    CofffeeMachine machine(&ingredients);
+
+    EXPECT_CALL(ingredients, AddWater(testing::_, s_cappuccinoWaterTemp));
+    machine.Prepare(DrinkType::Cappuccino);
+}
+
+TEST(CoffeeMashine, TestCappuccinoMilkRatioLittleCup)
+{
+    MockSourceOfIngredients ingredients;
+    CofffeeMachine machine(&ingredients);
+
+    size_t milkGram;
+    EXPECT_CALL(ingredients, AddMilk(testing::_)).WillOnce(testing::SaveArg<0>(&milkGram));
+    machine.Prepare(DrinkType::Cappuccino, CupSize::Little);
+
+    EXPECT_EQ(s_cupSizeLittle / 3, milkGram);
+}
+
+TEST(CoffeeMashine, TestCappuccinoMilkRatioBigCup)
+{
+    MockSourceOfIngredients ingredients;
+    CofffeeMachine machine(&ingredients);
+
+    size_t milkGram;
+    EXPECT_CALL(ingredients, AddMilk(testing::_)).WillOnce(testing::SaveArg<0>(&milkGram));
+    machine.Prepare(DrinkType::Cappuccino, CupSize::Big);
+
+    EXPECT_EQ(s_cupSizeBig / 3, milkGram);
+}
+
+TEST(CoffeeMashine, TestCappuccinoCoffeeRatio)
+{
+    MockSourceOfIngredients ingredients;
+    CofffeeMachine machine(&ingredients);
+
+    size_t coffeeGram;
+    EXPECT_CALL(ingredients, AddCoffee(testing::_)).WillOnce(testing::SaveArg<0>(&coffeeGram));
+    machine.Prepare(DrinkType::Cappuccino, CupSize::Little);
+
+    EXPECT_EQ(s_cupSizeLittle / 3, coffeeGram);
+}
+
+TEST(CoffeeMashine, TestCappuccinoMilkFoamRatio)
+{
+    MockSourceOfIngredients ingredients;
+    CofffeeMachine machine(&ingredients);
+
+    size_t gram;
+    EXPECT_CALL(ingredients, AddMilkFoam(testing::_)).WillOnce(testing::SaveArg<0>(&gram));
+    machine.Prepare(DrinkType::Cappuccino, CupSize::Little);
+
+    EXPECT_EQ(s_cupSizeLittle / 3, gram);
+}
