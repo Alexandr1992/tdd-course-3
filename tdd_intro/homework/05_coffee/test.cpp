@@ -45,6 +45,7 @@ public:
 };
 
 const static size_t s_americanoWaterTemp = 60;
+const static size_t s_cappuccinoWaterTemp = 80;
 
 enum class CupSize
 {
@@ -103,7 +104,7 @@ private:
 
     void PrepareCappuccino(CupSize size)
     {
-        m_ingredients->AddWater(0, 80);
+        m_ingredients->AddWater(0, s_cappuccinoWaterTemp);
     }
 
 private:
@@ -153,6 +154,19 @@ TEST(CoffeeMashine, TestCappuccinoWatterTemp)
     MockSourceOfIngredients ingredients;
     CofffeeMachine machine(&ingredients);
 
-    EXPECT_CALL(ingredients, AddWater(testing::_, 80));
+    EXPECT_CALL(ingredients, AddWater(testing::_, s_cappuccinoWaterTemp));
     machine.Prepare(DrinkType::Cappuccino);
+}
+
+TEST(CoffeeMashine, TestCappuccinoMilkRatioLittleCup)
+{
+    MockSourceOfIngredients ingredients;
+    CofffeeMachine machine(&ingredients);
+
+    size_t milkGram;
+    EXPECT_CALL(ingredients, AddWater(testing::_, testing::_));
+    EXPECT_CALL(ingredients, AddMilk(testing::_)).WillOnce(testing::SaveArg<0>(&milkGram));
+    machine.Prepare(DrinkType::Cappuccino, CupSize::Little);
+
+    EXPECT_EQ(100 / 3, milkGram);
 }
