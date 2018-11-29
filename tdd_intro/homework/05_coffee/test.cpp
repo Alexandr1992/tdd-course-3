@@ -47,6 +47,9 @@ public:
 const static size_t s_americanoWaterTemp = 60;
 const static size_t s_cappuccinoWaterTemp = 80;
 
+const static size_t s_cupSizeLittle = 100;
+const static size_t s_cupSizeBig = 140;
+
 enum class CupSize
 {
     Little = 0,
@@ -62,8 +65,8 @@ enum class DrinkType
 size_t GetCupSize(CupSize size)
 {
     switch (size) {
-    case CupSize::Little: return 100;
-    case CupSize::Big: return 140;
+    case CupSize::Little: return s_cupSizeLittle;
+    case CupSize::Big: return s_cupSizeBig;
     default:
         throw std::runtime_error("Undefined cup size");
     }
@@ -172,5 +175,18 @@ TEST(CoffeeMashine, TestCappuccinoMilkRatioLittleCup)
     EXPECT_CALL(ingredients, AddMilk(testing::_)).WillOnce(testing::SaveArg<0>(&milkGram));
     machine.Prepare(DrinkType::Cappuccino, CupSize::Little);
 
-    EXPECT_EQ(100 / 3, milkGram);
+    EXPECT_EQ(s_cupSizeLittle / 3, milkGram);
+}
+
+TEST(CoffeeMashine, TestCappuccinoMilkRatioBigCup)
+{
+    MockSourceOfIngredients ingredients;
+    CofffeeMachine machine(&ingredients);
+
+    size_t milkGram;
+    EXPECT_CALL(ingredients, AddWater(testing::_, testing::_));
+    EXPECT_CALL(ingredients, AddMilk(testing::_)).WillOnce(testing::SaveArg<0>(&milkGram));
+    machine.Prepare(DrinkType::Cappuccino, CupSize::Big);
+
+    EXPECT_EQ(s_cupSizeBig / 3, milkGram);
 }
