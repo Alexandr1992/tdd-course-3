@@ -68,13 +68,18 @@ public:
     explicit CofffeeMachine(ISourceOfIngredients* ingredients)
         : m_ingredients(ingredients){}
 
-    void PrepareAmericano(CupSize size)
+    void PrepareAmericano(CupSize size = CupSize::Little)
     {
         const size_t watterGram = GetCupSize(size) / 3;
         m_ingredients->AddWater(watterGram, s_americanoWaterTemp);
 
         const size_t coffeeGram = watterGram * 2;
         m_ingredients->AddCoffee(coffeeGram);
+    }
+
+    void PrepareCappuccino(CupSize size = CupSize::Little)
+    {
+        m_ingredients->AddWater(0, 80);
     }
 
 private:
@@ -88,7 +93,7 @@ TEST(CoffeeMashine, TestAmericanoWaterTemp)
 
     EXPECT_CALL(ingredients, AddWater(testing::_, s_americanoWaterTemp));
     EXPECT_CALL(ingredients, AddCoffee(testing::_));
-    machine.PrepareAmericano(CupSize::Little);
+    machine.PrepareAmericano();
 }
 
 TEST(CoffeeMashine, TestAmericanoWaterRatioLittleCup)
@@ -125,6 +130,5 @@ TEST(CoffeeMashine, TestCappuccinoWatterTemp)
     CofffeeMachine machine(&ingredients);
 
     EXPECT_CALL(ingredients, AddWater(testing::_, 80));
-    EXPECT_CALL(ingredients, AddCoffee(testing::_));
-    machine.PrepareAmericano(CupSize::Little);
+    machine.PrepareCappuccino();
 }
