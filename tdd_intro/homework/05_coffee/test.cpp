@@ -105,6 +105,9 @@ private:
     void PrepareCappuccino(CupSize size)
     {
         m_ingredients->AddWater(0, s_cappuccinoWaterTemp);
+
+        const size_t cup_size = GetCupSize(size);
+        m_ingredients->AddMilk(cup_size / 3);
     }
 
 private:
@@ -154,6 +157,7 @@ TEST(CoffeeMashine, TestCappuccinoWatterTemp)
     MockSourceOfIngredients ingredients;
     CofffeeMachine machine(&ingredients);
 
+    EXPECT_CALL(ingredients, AddMilk(testing::_));
     EXPECT_CALL(ingredients, AddWater(testing::_, s_cappuccinoWaterTemp));
     machine.Prepare(DrinkType::Cappuccino);
 }
