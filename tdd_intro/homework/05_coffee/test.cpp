@@ -162,7 +162,6 @@ TEST(CoffeeMashine, TestCappuccinoWatterTemp)
     MockSourceOfIngredients ingredients;
     CofffeeMachine machine(&ingredients);
 
-    EXPECT_CALL(ingredients, AddMilk(testing::_));
     EXPECT_CALL(ingredients, AddWater(testing::_, s_cappuccinoWaterTemp));
     machine.Prepare(DrinkType::Cappuccino);
 }
@@ -173,7 +172,6 @@ TEST(CoffeeMashine, TestCappuccinoMilkRatioLittleCup)
     CofffeeMachine machine(&ingredients);
 
     size_t milkGram;
-    EXPECT_CALL(ingredients, AddWater(testing::_, testing::_));
     EXPECT_CALL(ingredients, AddMilk(testing::_)).WillOnce(testing::SaveArg<0>(&milkGram));
     machine.Prepare(DrinkType::Cappuccino, CupSize::Little);
 
@@ -186,7 +184,6 @@ TEST(CoffeeMashine, TestCappuccinoMilkRatioBigCup)
     CofffeeMachine machine(&ingredients);
 
     size_t milkGram;
-    EXPECT_CALL(ingredients, AddWater(testing::_, testing::_));
     EXPECT_CALL(ingredients, AddMilk(testing::_)).WillOnce(testing::SaveArg<0>(&milkGram));
     machine.Prepare(DrinkType::Cappuccino, CupSize::Big);
 
