@@ -190,3 +190,15 @@ TEST(CoffeeMashine, TestCappuccinoMilkRatioBigCup)
 
     EXPECT_EQ(s_cupSizeBig / 3, milkGram);
 }
+
+TEST(CoffeeMashine, TestCappuccinoCoffeeRatio)
+{
+    MockSourceOfIngredients ingredients;
+    CofffeeMachine machine(&ingredients);
+
+    size_t coffeeGram;
+    EXPECT_CALL(ingredients, AddCoffee(testing::_)).WillOnce(testing::SaveArg<0>(&coffeeGram));
+    machine.Prepare(DrinkType::Cappuccino, CupSize::Little);
+
+    EXPECT_EQ(s_cupSizeLittle / 3, coffeeGram);
+}
