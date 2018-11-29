@@ -52,6 +52,12 @@ enum class CupSize
     Big
 };
 
+enum class DrinkType
+{
+    Americano = 0,
+    Cappuccino
+};
+
 size_t GetCupSize(CupSize size)
 {
     switch (size) {
@@ -68,7 +74,25 @@ public:
     explicit CofffeeMachine(ISourceOfIngredients* ingredients)
         : m_ingredients(ingredients){}
 
-    void PrepareAmericano(CupSize size = CupSize::Little)
+    void Prepare(DrinkType drink, CupSize size = CupSize::Little)
+    {
+        switch (drink)
+        {
+            case DrinkType::Americano:
+                PrepareAmericano(size);
+                break;
+
+            case DrinkType::Cappuccino:
+                PrepareCappuccino(size);
+                break;
+
+        default:
+            throw std::runtime_error("Unknown dink");
+        }
+    }
+
+private:
+    void PrepareAmericano(CupSize size)
     {
         const size_t watterGram = GetCupSize(size) / 3;
         m_ingredients->AddWater(watterGram, s_americanoWaterTemp);
@@ -77,7 +101,7 @@ public:
         m_ingredients->AddCoffee(coffeeGram);
     }
 
-    void PrepareCappuccino(CupSize size = CupSize::Little)
+    void PrepareCappuccino(CupSize size)
     {
         m_ingredients->AddWater(0, 80);
     }
@@ -93,7 +117,7 @@ TEST(CoffeeMashine, TestAmericanoWaterTemp)
 
     EXPECT_CALL(ingredients, AddWater(testing::_, s_americanoWaterTemp));
     EXPECT_CALL(ingredients, AddCoffee(testing::_));
-    machine.PrepareAmericano();
+    machine.Prepare(DrinkType::Americano);
 }
 
 TEST(CoffeeMashine, TestAmericanoWaterRatioLittleCup)
@@ -106,7 +130,7 @@ TEST(CoffeeMashine, TestAmericanoWaterRatioLittleCup)
     EXPECT_CALL(ingredients, AddWater(testing::_, testing::_)).WillOnce(testing::SaveArg<0>(&watter));
     EXPECT_CALL(ingredients, AddCoffee(testing::_)).WillOnce(testing::SaveArg<0>(&coffee));
 
-    machine.PrepareAmericano(CupSize::Little);
+    machine.Prepare(DrinkType::Americano, CupSize::Little);
     EXPECT_EQ(coffee / 2, watter);
 }
 
@@ -120,7 +144,7 @@ TEST(CoffeeMashine, TestAmericanoWaterRatioBigCup)
     EXPECT_CALL(ingredients, AddWater(testing::_, testing::_)).WillOnce(testing::SaveArg<0>(&watter));
     EXPECT_CALL(ingredients, AddCoffee(testing::_)).WillOnce(testing::SaveArg<0>(&coffee));
 
-    machine.PrepareAmericano(CupSize::Big);
+    machine.Prepare(DrinkType::Americano, CupSize::Big);
     EXPECT_EQ(coffee / 2, watter);
 }
 
@@ -130,5 +154,5 @@ TEST(CoffeeMashine, TestCappuccinoWatterTemp)
     CofffeeMachine machine(&ingredients);
 
     EXPECT_CALL(ingredients, AddWater(testing::_, 80));
-    machine.PrepareCappuccino();
+    machine.Prepare(DrinkType::Cappuccino);
 }
