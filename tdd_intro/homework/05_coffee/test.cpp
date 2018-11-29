@@ -52,6 +52,16 @@ enum class CupSize
     Big
 };
 
+size_t GetCupSize(CupSize size)
+{
+    switch (size) {
+    case CupSize::Little: return 100;
+    case CupSize::Big: return 140;
+    default:
+        throw std::runtime_error("Undefined cup size");
+    }
+}
+
 class CofffeeMachine
 {
 public:
@@ -60,11 +70,11 @@ public:
 
     void PrepareAmericano(CupSize size)
     {
-        if (size == CupSize::Little)
-        {
-            m_ingredients->AddWater(50, s_americanoWaterTemp);
-            m_ingredients->AddCoffee(100);
-        }
+        const size_t watterGram = GetCupSize(size) / 3;
+        m_ingredients->AddWater(watterGram, s_americanoWaterTemp);
+
+        const size_t coffeeGram = watterGram * 2;
+        m_ingredients->AddCoffee(coffeeGram);
     }
 
 private:
@@ -77,6 +87,7 @@ TEST(CoffeeMashine, TestAmericanoWaterTemp)
     CofffeeMachine machine(&ingredients);
 
     EXPECT_CALL(ingredients, AddWater(testing::_, s_americanoWaterTemp));
+    EXPECT_CALL(ingredients, AddCoffee(testing::_));
     machine.PrepareAmericano(CupSize::Little);
 }
 
