@@ -8,14 +8,14 @@ foreach(PROJ ${PROJECTS})
     if(${PROJ} STREQUAL "01_bob")
         # Steps.cpp contains compile errors
         FILE(GLOB SOURCES_FILES ${PROJ}/test.cpp)
-	else()
+    else()
         FILE(GLOB SOURCES_FILES ${PROJ}/*.h ${PROJ}/*.cpp)
-	endif()
+    endif()
 	
-	add_executable(${PROJ} ${SOURCES_FILES})
-	target_link_libraries(${PROJ} gtest_main gmock_main)
+    add_executable(${PROJ} ${SOURCES_FILES})
+    target_link_libraries(${PROJ} gtest_main gmock_main)
 
-	add_test(NAME ${PROJ} COMMAND ${PROJ})
+    add_test(NAME ${PROJ} COMMAND ${PROJ})
 endforeach()
 
 set_target_properties(${PROJECTS} PROPERTIES FOLDER demo)
