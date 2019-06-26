@@ -1,0 +1,11 @@
+MACRO(GETSUBDIRLIST result curdir)
+  file(GLOB children RELATIVE ${curdir} ${curdir}/*)
+  set(dirlist "")
+  foreach(child ${children})
+    if(IS_DIRECTORY ${curdir}/${child} 
+		AND NOT "CMakeFiles" STREQUAL ${child})
+      list(APPEND dirlist ${child})
+    endif()
+  endforeach()
+  set(${result} ${dirlist})
+ENDMACRO(GETSUBDIRLIST)

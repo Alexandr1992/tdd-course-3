@@ -4,6 +4,10 @@ project(tdd-course-3)
 # to run tests after build
 enable_testing()
 
+# to enable GETSUBDIRLIST macro
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/..")
+include(GetSubdirList)
+
 # turn on using solution folders for IDE
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 

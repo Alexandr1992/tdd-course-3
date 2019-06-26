@@ -1,16 +1,23 @@
 cmake_minimum_required(VERSION 3.0)
 
-# add subprojects
-add_subdirectory(01_bob)
-add_subdirectory(01_fizz_buzz)
-add_subdirectory(02_anagram)
-add_subdirectory(02_word_count)
-add_subdirectory(03_allergies)
-add_subdirectory(03_roman_numerals)
-add_subdirectory(04_timer)
+GETSUBDIRLIST(PROJECTS ${CMAKE_CURRENT_SOURCE_DIR})
 
-set_target_properties(01_bob 01_fizz_buzz 
-	02_anagram 02_word_count 
-	03_allergies 03_roman_numerals 04_timer
-	PROPERTIES FOLDER demo
-)
+foreach(PROJ ${PROJECTS})
+    project(${PROJ})
+
+    if(${PROJ} STREQUAL "01_bob")
+        # Steps.cpp contains compile errors
+        FILE(GLOB SOURCES_FILES ${PROJ}/test.cpp)
+	else()
+        FILE(GLOB SOURCES_FILES ${PROJ}/*.h ${PROJ}/*.cpp)
+	endif()
+	
+	add_executable(${PROJ} ${SOURCES_FILES})
+	target_link_libraries(${PROJ} gtest_main gmock_main)
+
+	add_test(NAME ${PROJ} COMMAND ${PROJ})
+endforeach()
+
+set_target_properties(${PROJECTS} PROPERTIES FOLDER demo)
+
+install(TARGETS ${PROJECTS} DESTINATION ${CMAKE_SOURCE_DIR}/../bin)
